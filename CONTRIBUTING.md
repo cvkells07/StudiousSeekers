@@ -2,33 +2,40 @@
 
 This doc explains how we work together on this project. If you forget a command, just copy-paste from here — that's what it's for.
 
-## Getting set up (do this once)
+## Getting set up (do this once as LEAD; YALL DON'T DO THIS)
 
 1. **Clone the repo** (download it to your computer):
+
    ```
    git clone https://github.com/cvkells07/StudiousSeekers.git
    cd StudiousSeekers
    ```
 
 2. **Set up the React app** (this is in the `client` folder, built with Vite):
+
    ```
    cd client
    npm install
    npm run dev
    ```
+
    This prints a local URL (like `http://localhost:5173`) — open it in your browser to see the app. Press Ctrl+C in the terminal to stop it when you're done. Run `git checkout ..` back to the root when you're ready to move on.
 
 3. **Set up the Python app** (this is in the `server` folder, built with FastAPI — do this in a separate terminal window/tab so React can keep running):
+
    ```
    cd server
    python -m venv venv
    ```
+
    Then activate it — **Mac/Linux**: `source venv/bin/activate` — **Windows**: `venv\Scripts\activate`
    You'll know it worked if you see `(venv)` at the start of your terminal line. Then:
+
    ```
    pip install -r requirements.txt
    uvicorn main:app --reload
    ```
+
    This prints a local URL (like `http://127.0.0.1:8000`) — open it in your browser to confirm it's running. Also check `http://127.0.0.1:8000/docs` to see the interactive API docs. Press Ctrl+C to stop it when you're done.
 
    **Important:** never edit anything inside the `venv` folder directly, and don't worry if you don't see it tracked in git — it's intentionally ignored (see the `.gitignore` note below).
@@ -58,15 +65,18 @@ We never write code directly on `main`. `main` is our "official" version — it 
 ### Starting new work
 
 1. Make sure your `main` is up to date:
+
    ```
    git checkout main
    git pull origin main
    ```
 
 2. Create your branch (name it after what you're building):
+
    ```
    git checkout -b feature/your-feature-name
    ```
+
    Examples: `feature/client-search-bar`, `feature/server-spots-api`, `feature/boost-voting`
 
 3. Now write your code!
@@ -85,9 +95,11 @@ Example: `git commit -m "add filter dropdown to search bar"`
 ### Sharing your work / asking for it to be added to main
 
 1. Push your branch to GitHub:
+
    ```
    git push -u origin feature/your-feature-name
    ```
+
    (You only need `-u origin feature/your-feature-name` the very first time you push this branch — after that, just `git push`.)
 
 2. Go to GitHub in your browser. You'll see a banner offering to open a **Pull Request (PR)**. Click it.
@@ -112,14 +124,17 @@ If this causes a "merge conflict," don't panic — just message the group chat a
 ## Checking your code style (linting)
 
 Before opening a PR, run the linter from inside `client` to catch common mistakes:
+
 ```
 npm run lint
 ```
+
 It'll either say no problems found, or list warnings/errors with file names and line numbers to fix.
 
 ## Commit message style
 
-Keep it short and describe *what changed*, not how you felt about it:
+Keep it short and describe _what changed_, not how you felt about it:
+
 - Good: `fix filter bug on mobile view`
 - Not as helpful: `stuff` or `updates`
 
