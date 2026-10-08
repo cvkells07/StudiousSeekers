@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "name": "Marston Basement (Collaboration Zone)",
+    "building": "Marston Science Library",
+    "quiet_level": "moderate",
+    "has_outlets": true,
+    "capacity": "large",
+    "hours": "24/7",
+    "upvotes": 0,
+    "tags": ["outlets", "group-friendly", "packed"]
+  },
+  {
+    "id": 2,
+    "name": "Library West 3rd Floor Cubicles",
+    "building": "Library West",
+    "quiet_level": "silent",
+    "has_outlets": true,
+    "capacity": "solo",
+    "hours": "24/7",
+    "upvotes": 5,
+    "tags": ["quiet", "empty"]
+  },
+  {
+    "id": 3,
+    "name": "Honors Village Residential Study Rooms",
+    "building": "Honors Village",
+    "quiet_level": "quiet",
+    "has_outlets": true,
+    "capacity": "small",
+    "hours": "24/7",
+    "upvotes": 3,
+    "tags": ["modern", "frequently-booked", "empty"]
+  },
+  {
+    "id": 4,
+    "name": "Reitz Union Food Court Tables",
+    "building": "J. Wayne Reitz Union",
+    "quiet_level": "loud",
+    "has_outlets": false,
+    "capacity": "large",
+    "hours": "7am-11pm",
+    "upvotes": 8,
+    "tags": ["conversational", "food-nearby", "packed"]
+  }
+]

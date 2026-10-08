@@ -12,7 +12,7 @@ Every study spot in our system has this shape:
   "name": "Library 2nd Floor Quiet Zone",
   "building": "Main Library",
   "quiet_level": "silent",
-  "electricity": true,
+  "has_outlets": true,
   "capacity": "large",
   "hours": "24/7",
   "upvotes": 12,
