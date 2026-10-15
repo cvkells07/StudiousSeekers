@@ -6,9 +6,9 @@
     "quiet_level": "moderate",
     "has_outlets": true,
     "capacity": "large",
-    "hours": "24/7",
+    "hours": "24/5",
     "upvotes": 0,
-    "tags": ["outlets", "group-friendly", "packed"]
+    "tags": ["group-friendly"]
   },
   {
     "id": 2,
@@ -23,7 +23,7 @@
   },
   {
     "id": 3,
-    "name": "Honors Village Residential Study Rooms",
+    "name": "Honors Village 5 Residential Study Rooms",
     "building": "Honors Village",
     "quiet_level": "quiet",
     "has_outlets": true,
@@ -42,5 +42,194 @@
     "hours": "7am-11pm",
     "upvotes": 8,
     "tags": ["conversational", "food-nearby", "packed"]
+  }, 
+    {
+    "id": 6,
+    "name": "Library West 2nd Floor Commons",
+    "building": "Library West",
+    "quiet_level": "moderate",
+    "has_outlets": true,
+    "capacity": "large",
+    "hours": "24/7",
+    "upvotes": 0,
+    "tags": ["social", "starbucks-nearby", "moderate-busyness"]
+  },
+  {
+    "id": 7,
+    "name": "Library West 4th Floor Graduate Floors",
+    "building": "Library West",
+    "quiet_level": "silent",
+    "has_outlets": true,
+    "capacity": "solo",
+    "hours": "24/7",
+    "upvotes": 0,
+    "tags": ["silent", "cubicles", "empty"]
+  },
+  {
+    "id": 8,
+    "name": "Marston 2nd Floor Collaboration Pods",
+    "building": "Marston Science Library",
+    "quiet_level": "moderate",
+    "has_outlets": true,
+    "capacity": "small",
+    "hours": "24/5",
+    "upvotes": 0,
+    "tags": ["whiteboards", "group-friendly", "packed"]
+  },
+  {
+    "id": 9,
+    "name": "Marston 4th Floor Silent Cubicles",
+    "building": "Marston Science Library",
+    "quiet_level": "silent",
+    "has_outlets": true,
+    "capacity": "solo",
+    "hours": "24/5",
+    "upvotes": 0,
+    "tags": ["silent", "outlets", "moderate-busyness"]
+  },
+  {
+    "id": 10,
+    "name": "Newell Hall 1st Floor Cafe Area",
+    "building": "Newell Hall",
+    "quiet_level": "loud",
+    "has_outlets": true,
+    "capacity": "large",
+    "hours": "24/7",
+    "upvotes": 0,
+    "tags": ["conversational", "chick-fil-a-nearby", "packed"]
+  },
+  {
+    "id": 11,
+    "name": "Newell Hall 4th Floor Quiet Attic",
+    "building": "Newell Hall",
+    "quiet_level": "quiet",
+    "has_outlets": true,
+    "capacity": "solo",
+    "hours": "24/7",
+    "upvotes": 0,
+    "tags": ["quiet", "comfy-chairs", "empty"]
+  },
+    {
+    "id": 12,
+    "name": "Reitz Union 2nd Floor Study Tables",
+    "building": "J. Wayne Reitz Union",
+    "quiet_level": "moderate",
+    "has_outlets": true,
+    "capacity": "small",
+    "hours": "7am-11pm",
+    "upvotes": 0,
+    "tags": ["indoors", "near-food", "moderate-busyness"]
+  },
+  {
+    "id": 13,
+    "name": "Honors Village Building 1 Study Lounges",
+    "building": "Honors Village (Bldg 1)",
+    "quiet_level": "quiet",
+    "has_outlets": true,
+    "capacity": "small",
+    "hours": "24/7",
+    "upvotes": 0,
+    "tags": ["modern", "honors-students", "empty"]
+  },
+  {
+    "id": 14,
+    "name": "Honors Village Building 2 Collaboration Spaces",
+    "building": "Honors Village (Bldg 2)",
+    "quiet_level": "moderate",
+    "has_outlets": true,
+    "capacity": "large",
+    "hours": "24/7",
+    "upvotes": 0,
+    "tags": ["whiteboards", "fresh-facilities", "moderate-busyness"]
+  },
+  {
+    "id": 15,
+    "name": "UF Education Library Main Floor",
+    "building": "Norman Hall",
+    "quiet_level": "quiet",
+    "has_outlets": true,
+    "capacity": "large",
+    "hours": "8am-9pm",
+    "upvotes": 0,
+    "tags": ["empty"]
+  },
+  {
+    "id": 16,
+    "name": "Marston 5th Floor Silent Study Area",
+    "building": "Marston Science Library",
+    "quiet_level": "silent",
+    "has_outlets": true,
+    "capacity": "solo",
+    "hours": "24/5",
+    "upvotes": 0,
+    "tags": ["absolute-silence", "cubicles", "packed"]
+  },
+  {
+    "id": 17,
+    "name": "Health Science Center Library 2nd Floor",
+    "building": "Communicore Building",
+    "quiet_level": "quiet",
+    "has_outlets": true,
+    "capacity": "large",
+    "hours": "8am-11pm",
+    "upvotes": 0,
+    "tags": ["outlets"]
+  },
+    {
+    "id": 18,
+    "name": "Reitz Union 3rd Floor Lounges",
+    "building": "J. Wayne Reitz Union",
+    "quiet_level": "moderate",
+    "has_outlets": true,
+    "capacity": "small",
+    "hours": "7am-11pm",
+    "upvotes": 0,
+    "tags": ["indoors", "empty"]
+  },
+  {
+    "id": 19,
+    "name": "Malachowsky Hall 2nd Floor Study Tables",
+    "building": "Malachowsky Hall",
+    "quiet_level": "moderate",
+    "has_outlets": true,
+    "capacity": "large",
+    "hours": "7am-10pm",
+    "upvotes": 0,
+    "tags": ["modern", "collaborative", "packed"]
+  },
+  {
+    "id": 20,
+    "name": "Malachowsky Hall 3rd Floor Pods",
+    "building": "Malachowsky Hall",
+    "quiet_level": "quiet",
+    "has_outlets": true,
+    "capacity": "small",
+    "hours": "7am-10pm",
+    "upvotes": 0,
+    "tags": ["clean", "high-tech", "moderate-busyness"]
+  },
+  {
+    "id": 21,
+    "name": "Library West Windowsill Bar Seating",
+    "building": "Library West",
+    "quiet_level": "moderate",
+    "has_outlets": true,
+    "capacity": "solo",
+    "hours": "24/7",
+    "upvotes": 0,
+    "tags": ["plaza-view", "natural-light", "packed"]
+  },
+  {
+    "id": 22,
+    "name": "Reitz Union Game Room",
+    "building": "Reitz Union",
+    "quiet_level": "quiet",
+    "has_outlets": true,
+    "capacity": "small",
+    "hours": "12pm-11pm",
+    "upvotes": 0,
+    "tags": ["plaza-view", "natural-light", "packed"]
   }
 ]
+
+
