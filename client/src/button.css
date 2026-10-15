@@ -1,0 +1,19 @@
+.upvote-btn {
+  padding: 8px 14px;
+  cursor: pointer;
+  border: 1px solid #2e7d32;
+  border-radius: 999px;
+  background: white;
+  color: #2e7d32;
+  font-size: 15px;
+  transition: background 0.15s;
+}
+
+.upvote-btn:hover {
+  background: #e8f5e9;
+}
+
+.upvote-btn.voted {
+  background: #2e7d32;
+  color: white;
+}
