@@ -52,8 +52,12 @@ Returns all study spots.
 ```
 
 ### `GET /spots?quiet_level=silent&has_outlets=true`
+<<<<<<< HEAD
 
 Returns filtered spots. Query parameters match the field names above exactly. Multiple filters can be combined.
+=======
+Returns filtered spots. Query parameters match the field names above exactly. Multiple filters can be combined. The current demo applies these filters client-side after loading the complete response.
+>>>>>>> 0b22a32f64397bc446457f244e50be9aa6fcedaf
 
 **Response:** same shape as `GET /spots`, just a smaller filtered list.
 
