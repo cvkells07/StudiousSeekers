@@ -6,7 +6,7 @@ UF WiCSE Design Team Project to help students find study spots across campus.
 
 ```powershell
 cd demo
-npm  install
+npm install
 npm start
 ```
 
