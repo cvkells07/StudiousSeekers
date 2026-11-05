@@ -29,7 +29,7 @@ Every study spot in our system has this shape:
 | `quiet_level` | string | One of: `"silent"`, `"quiet"`, `"moderate"`, `"loud"` |
 | `has_outlets` | boolean | `true` or `false` |
 | `capacity` | string | One of: `"solo"`, `"small"`, `"large"` |
-| `hours` | string | Free text for now (e.g. `"24/7"`, `"8am-10pm"`) |
+| `hours` | string | One of: |
 | `upvotes` | number | Starts at 0, incremented by the boost feature |
 | `tags` | array of strings | Flexible list for anything else worth filtering by |
 
@@ -38,26 +38,33 @@ Every study spot in our system has this shape:
 ## Endpoints
 
 ### `GET /spots`
+
 Returns all study spots.
 
 **Response:**
+
 ```json
 {
-  "spots": [ /* array of Study Spot objects, as defined above */ ]
+  "spots": [
+    /* array of Study Spot objects, as defined above */
+  ]
 }
 ```
 
 ### `GET /spots?quiet_level=silent&has_outlets=true`
+
 Returns filtered spots. Query parameters match the field names above exactly. Multiple filters can be combined.
 
 **Response:** same shape as `GET /spots`, just a smaller filtered list.
 
 ### `POST /spots/{id}/boost`
+
 Increments the upvote count for a specific spot by 1.
 
 **Request:** no body needed, just the spot's `id` in the URL.
 
 **Response:**
+
 ```json
 {
   "id": 1,
@@ -66,6 +73,7 @@ Increments the upvote count for a specific spot by 1.
 ```
 
 ### `GET /spots?sort=upvotes`
+
 Returns all spots sorted by upvotes, highest first. (Person D can add more sort options here later — e.g. `sort=name` — and just needs to update this doc when they do.)
 
 ## Error responses
@@ -85,4 +93,5 @@ If something goes wrong, the API should return a shape like this, so React alway
 - [ ] Do we need a `GET /spots/{id}` endpoint for a single spot's detail page?
 
 ---
+
 **Updating this file:** whoever changes an endpoint or field should update this doc in the same PR as their code change — not after. If the code and this doc disagree, that's a bug waiting to happen.
