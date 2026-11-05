@@ -2,12 +2,19 @@
   "name": "study-spot-finder",
   "version": "1.0.0",
   "description": "Study spot finder with search and filters",
-  "main": "index.html",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "start": "npx serve ."
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.10"
   }
 }
