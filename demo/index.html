@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Spot Finder</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .map-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('https://tile.openstreetmap.org/12/2048/1361.png');
+      background-size: cover;
+      background-position: center;
+      filter: blur(8px);
+      z-index: 0;
+    }
+    .search-container {
+      position: absolute;
+      top: 20px;
+      left: 40px;
+      z-index: 10;
+      width: 90%;
+      max-width: 600px;
+    }
+    .sort-container {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      z-index: 10;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .sort-bar {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 180px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+    }
+    .sort-bar:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .sort-bar.expanded {
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      padding: 16px 20px;
+      height: auto;
+      display: block;
+    }
+    .sort-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+    }
+    .sort-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+    .sort-expand-icon {
+      font-size: 12px;
+      color: #666;
+    }
+    .sort-options {
+      display: none;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #eee;
+    }
+    .sort-options.show {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .sort-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .sort-option input {
+      cursor: pointer;
+    }
+    .sort-option-label {
+      font-size: 14px;
+      color: #555;
+    }
+    .time-range-bar {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      padding: 12px 16px;
+      width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .time-range-bar:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .time-range-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .time-range-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      white-space: nowrap;
+    }
+    .time-range-value {
+      font-size: 12px;
+      color: #666;
+      white-space: nowrap;
+    }
+    .time-slider-container {
+      position: relative;
+      height: 20px;
+      display: flex;
+      align-items: center;
+    }
+    .tabs-container {
+      position: absolute;
+      top: 120px;
+      left: 40px;
+      right: 40px;
+      z-index: 5;
+      display: flex;
+      gap: 0;
+      max-width: 1200px;
+    }
+    .tab {
+      padding: 12px 24px;
+      background-color: #e0e0e0;
+      border: none;
+      border-radius: 8px 8px 0 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 2px solid transparent;
+    }
+    .tab:hover {
+      background-color: #e8e8e8;
+    }
+    .tab.active {
+      background-color: white;
+      color: #667eea;
+      border-bottom: 2px solid #667eea;
+    }
+    .view-container {
+      position: absolute;
+      top: 165px;
+      left: 40px;
+      right: 40px;
+      bottom: 40px;
+      z-index: 5;
+      max-width: 1200px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      padding: 20px;
+    }
+    .view {
+      display: none;
+      width: 100%;
+      height: 100%;
+    }
+    .view.active {
+      display: block;
+    }
+    .map-view {
+      background-color: #e8e8e8;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    .map-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .map-placeholder-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      color: #999;
+      font-weight: 500;
+      z-index: 1;
+    }
+    .map-marker {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background-color: #667eea;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s;
+    }
+    .map-marker:hover {
+      transform: rotate(-45deg) scale(1.1);
+    }
+    .map-marker-icon {
+      transform: rotate(45deg);
+      font-size: 18px;
+    }
+    .map-marker-tooltip {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .map-marker:hover .map-marker-tooltip {
+      opacity: 1;
+    }
+    .slider-track {
+      position: absolute;
+      width: 100%;
+      height: 4px;
+      background: #ddd;
+      border-radius: 2px;
+    }
+    .slider-range {
+      position: absolute;
+      height: 4px;
+      background: #667eea;
+      border-radius: 2px;
+    }
+    .time-slider {
+      position: absolute;
+      width: 100%;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      outline: none;
+      pointer-events: none;
+    }
+    .time-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background: #667eea;
+      border-radius: 50%;
+      cursor: pointer;
+      pointer-events: auto;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    .time-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      background: #667eea;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+      pointer-events: auto;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .search-bar {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+      max-width: 400px;
+    }
+    .search-bar:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .search-bar.expanded {
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      padding: 16px 20px;
+      max-width: 500px;
+    }
+    .search-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .search-icon {
+      width: 18px;
+      height: 18px;
+      color: #666;
+    }
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      padding: 4px 0;
+      color: #333;
+    }
+    .search-input::placeholder {
+      color: #999;
+    }
+    .expand-icon {
+      font-size: 12px;
+      color: #666;
+    }
+    .filters-panel {
+      display: none;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+    .filters-panel.show {
+      display: block;
+    }
+    .filter-section {
+      margin-bottom: 20px;
+    }
+    .filter-title {
+      margin: 0 0 12px 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+    .filter-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .filter-option {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .option-label {
+      font-size: 14px;
+      color: #555;
+    }
+    .time-range-filter {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .time-range-slider {
+      position: relative;
+      width: 100%;
+      height: 40px;
+    }
+    .slider-track {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #ddd;
+      border-radius: 2px;
+      transform: translateY(-50%);
+    }
+    .slider-input {
+      position: absolute;
+      width: 100%;
+      height: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      pointer-events: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .slider-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background: #667eea;
+      border-radius: 50%;
+      cursor: pointer;
+      pointer-events: auto;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    .slider-input::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      background: #667eea;
+      border-radius: 50%;
+      cursor: pointer;
+      pointer-events: auto;
+      border: none;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    .slider-thumb-left {
+      position: absolute;
+      top: 50%;
+      height: 4px;
+      background: #667eea;
+      border-radius: 2px;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+    .slider-thumb-right {
+      position: absolute;
+      top: 50%;
+      height: 4px;
+      background: #667eea;
+      border-radius: 2px;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+    .time-range-display {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #666;
+      font-weight: 500;
+    }
+    .button-container {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .spots-container {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      width: 100%;
+      height: 100%;
+    }
+    .spot-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      padding: 16px;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+      flex: 1;
+      min-width: 250px;
+    }
+    .spot-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      padding: 16px;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+    }
+    .spot-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .spot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .spot-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    .spot-building {
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
+    }
+    .spot-upvotes {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      color: #666;
+    }
+    .upvote-icon {
+      color: #667eea;
+    }
+    .spot-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .spot-tag {
+      padding: 4px 10px;
+      background-color: #f0f0f0;
+      border-radius: 12px;
+      font-size: 12px;
+      color: #555;
+    }
+    .spot-hours {
+      font-size: 13px;
+      color: #666;
+      margin-top: 8px;
+    }
+    .spot-image {
+      width: 100%;
+      height: 120px;
+      background-color: #f0f0f0;
+      border-radius: 6px;
+      margin-top: 12px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .spot-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .spot-image-placeholder {
+      font-size: 36px;
+      color: #ccc;
+    }
+    .apply-button {
+      flex: 1;
+      padding: 12px 24px;
+      background-color: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .apply-button:hover {
+      background-color: #5568d3;
+    }
+    .clear-button {
+      padding: 12px 24px;
+      background-color: transparent;
+      color: #666;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .clear-button:hover {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="map-background"></div>
+
+    <div class="search-container">
+      <div class="search-bar" id="searchBar">
+        <div class="search-content">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input class="search-input" type="text" id="searchInput" placeholder="Search study spots...">
+          <span class="expand-icon" id="expandIcon">▼</span>
+        </div>
+
+        <div class="filters-panel" id="filtersPanel">
+          <div class="filter-section">
+            <h4 class="filter-title">Quiet Level</h4>
+            <div class="filter-options">
+              <label class="filter-option">
+                <input type="checkbox" name="quiet_level" value="silent">
+                <span class="option-label">Silent</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" name="quiet_level" value="quiet">
+                <span class="option-label">Quiet</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" name="quiet_level" value="moderate">
+                <span class="option-label">Moderate</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" name="quiet_level" value="loud">
+                <span class="option-label">Loud</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h4 class="filter-title">Outlets</h4>
+            <div class="filter-options">
+              <label class="filter-option">
+                <input type="radio" name="has_outlets" value="true">
+                <span class="option-label">Yes</span>
+              </label>
+              <label class="filter-option">
+                <input type="radio" name="has_outlets" value="false">
+                <span class="option-label">No</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h4 class="filter-title">Capacity</h4>
+            <div class="filter-options">
+              <label class="filter-option">
+                <input type="checkbox" name="capacity" value="solo">
+                <span class="option-label">Solo</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" name="capacity" value="small">
+                <span class="option-label">Small</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" name="capacity" value="large">
+                <span class="option-label">Large</span>
+              </label>
+            </div>
+          </div>
+
+
+
+
+
+          <div class="button-container">
+            <button class="apply-button" id="applyButton">Apply Filters</button>
+            <button class="clear-button" id="clearButton">Clear All</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sort-container">
+      <div class="time-range-bar">
+        <div class="time-range-header">
+          <span class="time-range-label">Time</span>
+          <span class="time-range-value" id="timeRangeValue">Any</span>
+        </div>
+        <div class="time-slider-container">
+          <div class="slider-track"></div>
+          <div class="slider-range" id="sliderRange"></div>
+          <input type="range" class="time-slider" id="minTimeSlider" min="0" max="24" value="0" step="1">
+          <input type="range" class="time-slider" id="maxTimeSlider" min="0" max="24" value="24" step="1">
+        </div>
+      </div>
+      <div class="sort-bar" id="sortBar">
+        <div class="sort-header">
+          <span class="sort-label">Sort By</span>
+          <span class="sort-expand-icon" id="sortExpandIcon">▼</span>
+        </div>
+        <div class="sort-options" id="sortOptions">
+          <label class="sort-option">
+            <input type="radio" name="sort_by" value="upvotes_desc" checked>
+            <span class="sort-option-label">Upvotes (High to Low)</span>
+          </label>
+          <label class="sort-option">
+            <input type="radio" name="sort_by" value="upvotes_asc">
+            <span class="sort-option-label">Upvotes (Low to High)</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs-container">
+      <button class="tab active" id="spotsTab">Spots</button>
+      <button class="tab" id="mapTab">Map View</button>
+    </div>
+
+    <div class="view-container">
+      <div class="view active" id="spotsView">
+        <div class="spots-container">
+      <div class="spot-card">
+        <div class="spot-header">
+          <div>
+            <div class="spot-name">Library 2nd Floor Quiet Zone</div>
+            <div class="spot-building">Main Library</div>
+          </div>
+          <div class="spot-upvotes">
+            <span class="upvote-icon">▲</span>
+            <span>12</span>
+          </div>
+        </div>
+        <div class="spot-details">
+          <span class="spot-tag">Silent</span>
+          <span class="spot-tag">Outlets</span>
+          <span class="spot-tag">Large</span>
+        </div>
+        <div class="spot-hours">Hours: 24/7</div>
+        <div class="spot-image">
+          <span class="spot-image-placeholder">📚</span>
+        </div>
+      </div>
+
+      <div class="spot-card">
+        <div class="spot-header">
+          <div>
+            <div class="spot-name">Student Union Lounge</div>
+            <div class="spot-building">Student Union</div>
+          </div>
+          <div class="spot-upvotes">
+            <span class="upvote-icon">▲</span>
+            <span>8</span>
+          </div>
+        </div>
+        <div class="spot-details">
+          <span class="spot-tag">Moderate</span>
+          <span class="spot-tag">Outlets</span>
+          <span class="spot-tag">Small</span>
+        </div>
+        <div class="spot-hours">Hours: 8am - 10pm</div>
+        <div class="spot-image">
+          <span class="spot-image-placeholder">☕</span>
+        </div>
+      </div>
+
+      <div class="spot-card">
+        <div class="spot-header">
+          <div>
+            <div class="spot-name">Engineering Study Hall</div>
+            <div class="spot-building">Engineering Building</div>
+          </div>
+          <div class="spot-upvotes">
+            <span class="upvote-icon">▲</span>
+            <span>5</span>
+          </div>
+        </div>
+        <div class="spot-details">
+          <span class="spot-tag">Quiet</span>
+          <span class="spot-tag">No Outlets</span>
+          <span class="spot-tag">Solo</span>
+        </div>
+        <div class="spot-hours">Hours: 7am - 11pm</div>
+        <div class="spot-image">
+          <span class="spot-image-placeholder">💻</span>
+        </div>
+      </div>
+        </div>
+      </div>
+      <div class="view" id="mapView">
+        <div class="map-view">
+          <img class="map-image" src="https://tile.openstreetmap.org/12/2048/1361.png" alt="Campus Map">
+          <div class="map-marker" style="top: 30%; left: 25%;" data-spot="1">
+            <span class="map-marker-icon">📍</span>
+            <div class="map-marker-tooltip">Library 2nd Floor</div>
+          </div>
+          <div class="map-marker" style="top: 50%; left: 50%;" data-spot="2">
+            <span class="map-marker-icon">📍</span>
+            <div class="map-marker-tooltip">Student Union Lounge</div>
+          </div>
+          <div class="map-marker" style="top: 40%; left: 70%;" data-spot="3">
+            <span class="map-marker-icon">📍</span>
+            <div class="map-marker-tooltip">Engineering Study Hall</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const searchBar = document.getElementById('searchBar');
+    const filtersPanel = document.getElementById('filtersPanel');
+    const expandIcon = document.getElementById('expandIcon');
+    const searchInput = document.getElementById('searchInput');
+    const applyButton = document.getElementById('applyButton');
+    const clearButton = document.getElementById('clearButton');
+    const sortBar = document.getElementById('sortBar');
+    const sortOptions = document.getElementById('sortOptions');
+    const sortExpandIcon = document.getElementById('sortExpandIcon');
+    const minTimeSlider = document.getElementById('minTimeSlider');
+    const maxTimeSlider = document.getElementById('maxTimeSlider');
+    const sliderRange = document.getElementById('sliderRange');
+    const timeRangeValue = document.getElementById('timeRangeValue');
+    const spotsTab = document.getElementById('spotsTab');
+    const mapTab = document.getElementById('mapTab');
+    const spotsView = document.getElementById('spotsView');
+    const mapView = document.getElementById('mapView');
+
+    let isExpanded = false;
+    let isSortExpanded = false;
+
+    searchBar.addEventListener('click', (e) => {
+      if (e.target !== searchInput && !filtersPanel.contains(e.target)) {
+        isExpanded = !isExpanded;
+        searchBar.classList.toggle('expanded', isExpanded);
+        filtersPanel.classList.toggle('show', isExpanded);
+        expandIcon.textContent = isExpanded ? '▲' : '▼';
+      }
+    });
+
+    searchInput.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    filtersPanel.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    applyButton.addEventListener('click', () => {
+      const searchQuery = searchInput.value.toLowerCase();
+      const quietLevels = Array.from(document.querySelectorAll('input[name="quiet_level"]:checked')).map(cb => cb.value);
+      const hasOutlets = document.querySelector('input[name="has_outlets"]:checked')?.value || '';
+      const capacities = Array.from(document.querySelectorAll('input[name="capacity"]:checked')).map(cb => cb.value);
+      const minTime = minTimeSlider.value;
+      const maxTime = maxTimeSlider.value;
+      const sortBy = document.querySelector('input[name="sort_by"]:checked').value;
+
+      console.log('Search Query:', searchQuery);
+      console.log('Filters:', {
+        quiet_level: quietLevels,
+        has_outlets: hasOutlets,
+        capacity: capacities,
+        time_range: { min: minTime, max: maxTime },
+        sort_by: sortBy
+      });
+
+      // Filter spot cards
+      const spotCards = document.querySelectorAll('.spot-card');
+      spotCards.forEach(card => {
+        const name = card.querySelector('.spot-name').textContent.toLowerCase();
+        const building = card.querySelector('.spot-building').textContent.toLowerCase();
+        const tags = Array.from(card.querySelectorAll('.spot-tag')).map(tag => tag.textContent.toLowerCase());
+
+        let matches = true;
+
+        // Search query
+        if (searchQuery && !name.includes(searchQuery) && !building.includes(searchQuery)) {
+          matches = false;
+        }
+
+        // Quiet level filter
+        if (quietLevels.length > 0) {
+          const quietTag = tags.find(t => ['silent', 'quiet', 'moderate', 'loud'].includes(t));
+          if (!quietLevels.includes(quietTag)) {
+            matches = false;
+          }
+        }
+
+        // Outlets filter
+        if (hasOutlets) {
+          const hasOutletTag = tags.includes('outlets');
+          if ((hasOutlets === 'true' && !hasOutletTag) || (hasOutlets === 'false' && hasOutletTag)) {
+            matches = false;
+          }
+        }
+
+        // Capacity filter
+        if (capacities.length > 0) {
+          const capacityTag = tags.find(t => ['solo', 'small', 'large'].includes(t));
+          if (!capacities.includes(capacityTag)) {
+            matches = false;
+          }
+        }
+
+        card.style.display = matches ? 'block' : 'none';
+      });
+
+      // Filter map markers
+      const mapMarkers = document.querySelectorAll('.map-marker');
+      const spotData = [
+        { id: 1, name: 'Library 2nd Floor Quiet Zone', quiet: 'silent', outlets: true, capacity: 'large' },
+        { id: 2, name: 'Student Union Lounge', quiet: 'moderate', outlets: true, capacity: 'small' },
+        { id: 3, name: 'Engineering Study Hall', quiet: 'quiet', outlets: false, capacity: 'solo' }
+      ];
+
+      mapMarkers.forEach(marker => {
+        const spotId = parseInt(marker.dataset.spot);
+        const spot = spotData.find(s => s.id === spotId);
+
+        if (!spot) return;
+
+        let matches = true;
+
+        // Search query
+        if (searchQuery && !spot.name.toLowerCase().includes(searchQuery)) {
+          matches = false;
+        }
+
+        // Quiet level filter
+        if (quietLevels.length > 0 && !quietLevels.includes(spot.quiet)) {
+          matches = false;
+        }
+
+        // Outlets filter
+        if (hasOutlets) {
+          if ((hasOutlets === 'true' && !spot.outlets) || (hasOutlets === 'false' && spot.outlets)) {
+            matches = false;
+          }
+        }
+
+        // Capacity filter
+        if (capacities.length > 0 && !capacities.includes(spot.capacity)) {
+          matches = false;
+        }
+
+        marker.style.display = matches ? 'flex' : 'none';
+      });
+
+      isExpanded = false;
+      searchBar.classList.remove('expanded');
+      filtersPanel.classList.remove('show');
+      expandIcon.textContent = '▼';
+    });
+
+    document.querySelectorAll('input[name="sort_by"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const sortBy = document.querySelector('input[name="sort_by"]:checked').value;
+        console.log('Sort changed to:', sortBy);
+        isSortExpanded = false;
+        sortBar.classList.remove('expanded');
+        sortOptions.classList.remove('show');
+        sortExpandIcon.textContent = '▼';
+      });
+    });
+
+    clearButton.addEventListener('click', () => {
+      searchInput.value = '';
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+      });
+      document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.checked = false;
+      });
+      document.querySelector('input[name="sort_by"][value="upvotes_desc"]').checked = true;
+      minTimeSlider.value = 0;
+      maxTimeSlider.value = 24;
+      updateSlider();
+    });
+
+    sortBar.addEventListener('click', (e) => {
+      if (!sortOptions.contains(e.target)) {
+        isSortExpanded = !isSortExpanded;
+        sortBar.classList.toggle('expanded', isSortExpanded);
+        sortOptions.classList.toggle('show', isSortExpanded);
+        sortExpandIcon.textContent = isSortExpanded ? '▲' : '▼';
+      }
+    });
+
+    sortOptions.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    spotsTab.addEventListener('click', () => {
+      spotsTab.classList.add('active');
+      mapTab.classList.remove('active');
+      spotsView.classList.add('active');
+      mapView.classList.remove('active');
+    });
+
+    mapTab.addEventListener('click', () => {
+      mapTab.classList.add('active');
+      spotsTab.classList.remove('active');
+      mapView.classList.add('active');
+      spotsView.classList.remove('active');
+    });
+
+    function formatTime(hour) {
+      const h = parseInt(hour);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const hour12 = h % 12 || 12;
+      return `${hour12}:00 ${ampm}`;
+    }
+
+    function updateSlider() {
+      const minVal = parseInt(minTimeSlider.value);
+      const maxVal = parseInt(maxTimeSlider.value);
+      const minPercent = (minVal / 24) * 100;
+      const maxPercent = (maxVal / 24) * 100;
+
+      sliderRange.style.left = minPercent + '%';
+      sliderRange.style.width = (maxPercent - minPercent) + '%';
+
+      if (minVal === 0 && maxVal === 24) {
+        timeRangeValue.textContent = 'Any';
+      } else {
+        timeRangeValue.textContent = `${formatTime(minVal)} - ${formatTime(maxVal)}`;
+      }
+    }
+
+    minTimeSlider.addEventListener('input', function() {
+      const minVal = parseInt(this.value);
+      const maxVal = parseInt(maxTimeSlider.value);
+      if (minVal >= maxVal) {
+        this.value = maxVal - 1;
+      }
+      updateSlider();
+    });
+
+    maxTimeSlider.addEventListener('input', function() {
+      const maxVal = parseInt(this.value);
+      const minVal = parseInt(minTimeSlider.value);
+      if (maxVal <= minVal) {
+        this.value = minVal + 1;
+      }
+      updateSlider();
+    });
+
+    updateSlider();
+  </script>
+</body>
+</html>

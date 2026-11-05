@@ -10,7 +10,7 @@ This is our week-by-week checkpoint list. The goal isn't to finish every single 
 - [x] ESLint configured
 - [x] CONTRIBUTING.md written and pushed
 
-## Week 2 (Sept 29–Oct 5)
+## Week 2 (Sept 29–Oct 5) 
 - [ ] Finalize the API contract (see TASKS.md) — endpoint names and data shapes agreed on by everyone
 - [ ] Person A: first reusable components built (buttons, cards, layout shell)
 - [ ] Person C: data model decided, seed data collection started (real campus study spots)
