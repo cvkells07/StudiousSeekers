@@ -1,8 +1,10 @@
 import json
+import random
 from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
@@ -31,6 +33,18 @@ def read_root():
 @app.get("/spots")
 def get_spots():
     return {"spots": load_spots()}
+
+
+@app.get("/spots/random")
+def get_random_spot():
+    spots = load_spots()
+    if not spots:
+        return JSONResponse(
+            status_code=404,
+            content={"error": "No study spots available"},
+        )
+    return random.choice(spots)
+
 
 if __name__ == "__main__":
     import uvicorn

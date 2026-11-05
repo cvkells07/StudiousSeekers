@@ -10,6 +10,7 @@ Every study spot in our system has this shape:
 {
   "id": 1,
   "name": "Library 2nd Floor Quiet Zone",
+  "description": "A quiet place to study. Outlets are available.",
   "building": "Main Library",
   "quiet_level": "silent",
   "has_outlets": true,
@@ -25,6 +26,7 @@ Every study spot in our system has this shape:
 |---|---|---|
 | `id` | number | Unique identifier, assigned by the server |
 | `name` | string | Human-readable name of the spot |
+| `description` | string | Short description of the location and its study environment |
 | `building` | string | Which campus building it's in |
 | `quiet_level` | string | One of: `"silent"`, `"quiet"`, `"moderate"`, `"loud"` |
 | `has_outlets` | boolean | `true` or `false` |
@@ -50,6 +52,13 @@ Returns all study spots.
   ]
 }
 ```
+
+### `GET /spots/random`
+Returns one randomly selected study spot using the Study Spot object shape above.
+
+**Response:** one Study Spot object.
+
+**Error response (404):** returned when no study spots are available.
 
 ### `GET /spots?quiet_level=silent&has_outlets=true`
 <<<<<<< HEAD

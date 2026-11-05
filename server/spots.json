@@ -2,6 +2,7 @@
   {
     "id": 1,
     "name": "Marston Basement (Collaboration Zone)",
+    "description":"A bustling, lively subterranean workspace perfect for group projects and late-night studying.",
     "building": "Marston Science Library",
     "quiet_level": "moderate",
     "has_outlets": true,
@@ -13,6 +14,7 @@
   {
     "id": 2,
     "name": "Library West 3rd Floor Cubicles",
+    "description": "Individual cubicles provide a silent place to study - good for exam prep.",
     "building": "Library West",
     "quiet_level": "silent",
     "has_outlets": true,
@@ -24,6 +26,7 @@
   {
     "id": 3,
     "name": "Honors Village 5 Residential Study Rooms",
+    "description": "Modern study rooms offer a quiet setting for a small group. These rooms may require reservation.",
     "building": "Honors Village",
     "quiet_level": "quiet",
     "has_outlets": true,
@@ -35,6 +38,7 @@
   {
     "id": 4,
     "name": "Reitz Union Food Court Tables",
+    "description": "Large tables near food suit a lively study session.",
     "building": "J. Wayne Reitz Union",
     "quiet_level": "loud",
     "has_outlets": false,
@@ -46,6 +50,7 @@
     {
     "id": 6,
     "name": "Library West 2nd Floor Commons",
+    "description": "A spacious, social study area with moderate noise, outlets, and Starbucks nearby.",
     "building": "Library West",
     "quiet_level": "moderate",
     "has_outlets": true,
@@ -57,6 +62,7 @@
   {
     "id": 7,
     "name": "Library West 4th Floor Graduate Floors",
+    "description": "Silent cubicles offer a focused place for individual study.",
     "building": "Library West",
     "quiet_level": "silent",
     "has_outlets": true,
@@ -68,6 +74,7 @@
   {
     "id": 8,
     "name": "Marston 2nd Floor Collaboration Pods",
+    "description": "Small collaboration pods with whiteboards support group work. The area has moderate noise and outlets.",
     "building": "Marston Science Library",
     "quiet_level": "moderate",
     "has_outlets": true,
@@ -79,6 +86,7 @@
   {
     "id": 9,
     "name": "Marston 4th Floor Silent Cubicles",
+    "description": "Silent cubicles provide a focused spot for individual study, with outlets available.",
     "building": "Marston Science Library",
     "quiet_level": "silent",
     "has_outlets": true,
@@ -90,6 +98,7 @@
   {
     "id": 10,
     "name": "Newell Hall 1st Floor Cafe Area",
+    "description": "A lively cafe area for conversational study, with outlets and Chick-fil-A nearby.",
     "building": "Newell Hall",
     "quiet_level": "loud",
     "has_outlets": true,
@@ -101,6 +110,7 @@
   {
     "id": 11,
     "name": "Newell Hall 4th Floor Quiet Attic",
+    "description": "A quiet solo-study area with comfortable chairs and outlets.",
     "building": "Newell Hall",
     "quiet_level": "quiet",
     "has_outlets": true,
@@ -112,6 +122,7 @@
     {
     "id": 12,
     "name": "Reitz Union 2nd Floor Study Tables",
+    "description": "Indoor tables suit small groups in a moderately busy area, with outlets and food nearby.",
     "building": "J. Wayne Reitz Union",
     "quiet_level": "moderate",
     "has_outlets": true,
@@ -123,6 +134,7 @@
   {
     "id": 13,
     "name": "Honors Village Building 1 Study Lounges",
+    "description": "A modern, quiet lounge for small groups, with outlets available.",
     "building": "Honors Village (Bldg 1)",
     "quiet_level": "quiet",
     "has_outlets": true,
@@ -134,6 +146,7 @@
   {
     "id": 14,
     "name": "Honors Village Building 2 Collaboration Spaces",
+    "description": "Spacious collaboration areas with whiteboards for group work. The noise level is moderate and outlets are available.",
     "building": "Honors Village (Bldg 2)",
     "quiet_level": "moderate",
     "has_outlets": true,
@@ -145,6 +158,7 @@
   {
     "id": 15,
     "name": "UF Education Library Main Floor",
+    "description": "A quiet library floor with room for a larger group and outlets available.",
     "building": "Norman Hall",
     "quiet_level": "quiet",
     "has_outlets": true,
@@ -156,6 +170,7 @@
   {
     "id": 16,
     "name": "Marston 5th Floor Silent Study Area",
+    "description": "This area offers silent individual study in cubicles, with outlets available.",
     "building": "Marston Science Library",
     "quiet_level": "silent",
     "has_outlets": true,
@@ -167,6 +182,7 @@
   {
     "id": 17,
     "name": "Health Science Center Library 2nd Floor",
+    "description": "A quiet, spacious library study area with outlets available.",
     "building": "Communicore Building",
     "quiet_level": "quiet",
     "has_outlets": true,
@@ -178,6 +194,7 @@
     {
     "id": 18,
     "name": "Reitz Union 3rd Floor Lounges",
+    "description": "Indoor lounges provide a moderately quiet spot for small groups, with outlets available.",
     "building": "J. Wayne Reitz Union",
     "quiet_level": "moderate",
     "has_outlets": true,
@@ -189,6 +206,7 @@
   {
     "id": 19,
     "name": "Malachowsky Hall 2nd Floor Study Tables",
+    "description": "Modern tables offer room for larger collaborative groups. The area is moderately noisy and can be busy.",
     "building": "Malachowsky Hall",
     "quiet_level": "moderate",
     "has_outlets": true,
@@ -200,6 +218,7 @@
   {
     "id": 20,
     "name": "Malachowsky Hall 3rd Floor Pods",
+    "description": "Clean, high-tech pods provide a quiet spot for a small group, with outlets available.",
     "building": "Malachowsky Hall",
     "quiet_level": "quiet",
     "has_outlets": true,
@@ -211,6 +230,7 @@
   {
     "id": 21,
     "name": "Library West Windowsill Bar Seating",
+    "description": "Individual bar seating offers natural light and a plaza view, with outlets available and moderate noise.",
     "building": "Library West",
     "quiet_level": "moderate",
     "has_outlets": true,
@@ -222,6 +242,7 @@
   {
     "id": 22,
     "name": "Reitz Union Game Room",
+    "description": "A small-capacity study spot in Reitz Union listed as quiet, with outlets and noon-to-11pm hours.",
     "building": "Reitz Union",
     "quiet_level": "quiet",
     "has_outlets": true,
@@ -231,5 +252,4 @@
     "tags": ["plaza-view", "natural-light", "packed"]
   }
 ]
-
 
