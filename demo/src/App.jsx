@@ -186,7 +186,7 @@ function App() {
       {status ? <div className="status error">{status}</div> : tab === 'map' ? <MapView spots={filteredSpots} /> : (
         <section className="results" aria-live="polite">
           <div className="results-header"><h2>Study spots</h2><span>{filteredSpots.length} of {spots.length} spots</span></div>
-          {filteredSpots.length ? <div className="spots-container">{filteredSpots.map((spot) => <article className="spot-card" key={spot.id}><div className="spot-header"><div><h3>{spot.name}</h3><p>{spot.building}</p></div><div className="spot-upvotes">▲ {spot.upvotes}</div></div><div className="spot-details"><span>{spot.quiet_level}</span><span>{spot.has_outlets ? 'Outlets' : 'No outlets'}</span><span>{spot.capacity}</span>{(spot.tags || []).map((tag) => <span key={tag}>{tag}</span>)}</div><p className="spot-hours">Hours: {spot.hours}</p></article>)}</div> : <div className="status">No study spots match these filters.</div>}
+          {filteredSpots.length ? <div className="spots-container">{filteredSpots.map((spot) => <article className="spot-card" key={spot.id}>{spot.image && <img className="spot-image" src={spot.image} alt={spot.name} loading="lazy" />}<div className="spot-header"><div><h3>{spot.name}</h3><p>{spot.building}</p></div><div className="spot-upvotes">▲ {spot.upvotes}</div></div><div className="spot-details"><span>{spot.quiet_level}</span><span>{spot.has_outlets ? 'Outlets' : 'No outlets'}</span><span>{spot.capacity}</span>{(spot.tags || []).map((tag) => <span key={tag}>{tag}</span>)}</div><p className="spot-hours">Hours: {spot.hours}</p></article>)}</div> : <div className="status">No study spots match these filters.</div>}
         </section>
       )}
     </main>
