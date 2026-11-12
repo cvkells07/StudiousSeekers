@@ -1,39 +1,27 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import mapboxgl from 'mapbox-gl';
 
 const API_URL = 'http://127.0.0.1:8000/spots';
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN?.trim();
+const HAS_VALID_MAPBOX_TOKEN = MAPBOX_TOKEN?.startsWith('pk.');
 
-const BUILDINGS = {
-  'Marston Science Library': { left: 28, top: 34, shortName: 'Marston' },
-  'Library West': { left: 60, top: 24, shortName: 'Library West' },
-  'Honors Village': { left: 77, top: 64, shortName: 'Honors Village' },
-  'J. Wayne Reitz Union': { left: 43, top: 70, shortName: 'Reitz Union' },
-  'Reitz Union': { left: 43, top: 70, shortName: 'Reitz Union' },
-  'Newell Hall': { left: 67, top: 48, shortName: 'Newell Hall' },
-  'Norman Hall': { left: 20, top: 68, shortName: 'Norman Hall' },
-  'Communicore Building': { left: 82, top: 30, shortName: 'Health Science Center' },
-  'Malachowsky Hall': { left: 54, top: 52, shortName: 'Malachowsky Hall' },
+const BUILDING_COORDINATES = {
+  'Marston Science Library': [-82.3457, 29.6467],
+  'Library West': [-82.3439, 29.6486],
+  'Honors Village': [-82.347, 29.641],
+  'J. Wayne Reitz Union': [-82.3471, 29.6467],
+  'Reitz Union': [-82.3471, 29.6467],
+  'Newell Hall': [-82.3437, 29.6491],
+  'Norman Hall': [-82.349, 29.648],
+  'Communicore Building': [-82.345, 29.638],
+  'Malachowsky Hall': [-82.344, 29.644],
 };
 
-function getBuildingPosition(spot, index) {
-  const building = Object.keys(BUILDINGS).find((name) => spot.building.startsWith(name));
-  const position = BUILDINGS[building] || { left: 50, top: 50, shortName: spot.building };
-  const offset = (index % 3 - 1) * 2.5;
-  return { ...position, left: position.left + offset, top: position.top + offset };
-}
+function getSpotCoordinates(spot) {
+  const building = Object.keys(BUILDING_COORDINATES)
+    .find((name) => spot.building.startsWith(name));
 
-function SpotSummary({ spot, compact = false }) {
-  return (
-    <div className={compact ? 'spot-summary compact' : 'spot-summary'}>
-      <strong>{spot.name}</strong>
-      <span>{spot.building}</span>
-      <div className="summary-tags">
-        <span>{spot.quiet_level}</span>
-        <span>{spot.has_outlets ? 'Outlets' : 'No outlets'}</span>
-        <span>{spot.capacity}</span>
-      </div>
-      <small>Open {spot.hours}</small>
-    </div>
-  );
+  return BUILDING_COORDINATES[building] || [-82.34772, 29.64604];
 }
 
 function Filters({ filters, setFilters, onClear }) {
@@ -76,8 +64,79 @@ function Filters({ filters, setFilters, onClear }) {
   );
 }
 
-function MapView({ spots }) {
-  const [activeSpot, setActiveSpot] = useState(null);
+function MapView({ spots, darkMode }) {
+  const mapContainer = useRef(null);
+  const map = useRef(null);
+  const markers = useRef([]);
+
+  useEffect(() => {
+    if (!HAS_VALID_MAPBOX_TOKEN) return undefined;
+
+    mapboxgl.accessToken = MAPBOX_TOKEN;
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: 'mapbox://styles/mapbox/standard',
+      center: [-82.34669, 29.64505],
+      zoom: 15.51,
+      bearing: 0,
+      pitch: 0,
+      config: {
+        basemap: {
+          lightPreset: darkMode ? 'dusk' : 'day',
+          show3dFacades: true,
+          showLandmarkIcons: true,
+          showIndoor: true,
+          showHdRoads: true,
+          showPlaceLabels: true,
+          showPointOfInterestLabels: true,
+          showRoadLabels: true,
+          showTransitLabels: true,
+        },
+      },
+    });
+
+    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+    return () => {
+      markers.current.forEach((marker) => marker.remove());
+      markers.current = [];
+      map.current?.remove();
+      map.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!map.current || !HAS_VALID_MAPBOX_TOKEN) return;
+    map.current.setConfigProperty('basemap', 'lightPreset', darkMode ? 'dusk' : 'day');
+  }, [darkMode]);
+
+  useEffect(() => {
+    if (!map.current || !HAS_VALID_MAPBOX_TOKEN) return;
+
+    markers.current.forEach((marker) => marker.remove());
+    markers.current = spots.map((spot) => {
+      const popupContent = document.createElement('div');
+      popupContent.className = 'map-popup';
+      popupContent.innerHTML = `
+        <strong></strong>
+        <span></span>
+        <small></small>
+        <small></small>
+      `;
+      popupContent.querySelector('strong').textContent = spot.name;
+      popupContent.querySelector('span').textContent = spot.building;
+      popupContent.querySelector('small').textContent = `${spot.quiet_level} · ${spot.capacity}`;
+      popupContent.querySelectorAll('small')[1].textContent = spot.has_outlets
+        ? 'Outlets available'
+        : 'No outlets';
+
+      return new mapboxgl.Marker({ color: '#d47b45' })
+        .setLngLat(getSpotCoordinates(spot))
+        .setPopup(new mapboxgl.Popup({ offset: 18 }).setDOMContent(popupContent))
+        .addTo(map.current);
+    });
+  }, [spots]);
+
   return (
     <div className="map-shell">
       <div className="map-intro">
@@ -85,33 +144,15 @@ function MapView({ spots }) {
           <p className="eyebrow">Campus map</p>
           <h2>Find a spot near you</h2>
         </div>
-        <p className="map-help">Hover or focus a dot to preview a study spot.</p>
+        <p className="map-help">Select a marker to preview a study spot.</p>
       </div>
-      <div className="map-canvas" aria-label="Map of study spots across campus">
-        <div className="map-road road-one" />
-        <div className="map-road road-two" />
-        <div className="map-water" />
-        {spots.map((spot, index) => {
-          const position = getBuildingPosition(spot, index);
-          const isActive = activeSpot?.id === spot.id;
-          return (
-            <div className="map-marker" key={spot.id} style={{ left: `${position.left}%`, top: `${position.top}%` }}>
-              {isActive && <SpotSummary spot={spot} compact />}
-              <button
-                className={`spot-dot ${isActive ? 'active' : ''}`}
-                type="button"
-                aria-label={`Preview ${spot.name}`}
-                onMouseEnter={() => setActiveSpot(spot)}
-                onMouseLeave={() => setActiveSpot(null)}
-                onFocus={() => setActiveSpot(spot)}
-                onBlur={() => setActiveSpot(null)}
-              />
-              <span className="map-label">{position.shortName}</span>
-            </div>
-          );
-        })}
-        <div className="map-compass" aria-hidden="true">N<br /><span>↑</span></div>
-      </div>
+      {!HAS_VALID_MAPBOX_TOKEN ? (
+        <div className="map-token-message">
+          Add <code>VITE_MAPBOX_TOKEN</code> to <code>demo/.env</code> to load the map.
+        </div>
+      ) : (
+        <div ref={mapContainer} className="map-canvas mapbox-canvas" aria-label="Map of study spots across campus" />
+      )}
       <p className="map-count">{spots.length} study spots shown</p>
     </div>
   );
@@ -119,12 +160,16 @@ function MapView({ spots }) {
 
 function App() {
   const [spots, setSpots] = useState([]);
-  const [query, setQuery] = useState('');
-  const [tab, setTab] = useState('list');
+  const [mapQuery, setMapQuery] = useState('');
+  const [listQuery, setListQuery] = useState('');
+  const [tab, setTab] = useState('map');
+  const [darkMode, setDarkMode] = useState(false);
   const [filters, setFilters] = useState({ quiet: [], capacity: [], outlets: '' });
   const [sort, setSort] = useState('upvotes_desc');
   const [showFilters, setShowFilters] = useState(false);
   const [status, setStatus] = useState('Loading study spots...');
+  const query = tab === 'map' ? mapQuery : listQuery;
+  const setQuery = tab === 'map' ? setMapQuery : setListQuery;
 
   useEffect(() => {
     fetch(API_URL)
@@ -153,26 +198,49 @@ function App() {
 
   const clearFilters = () => {
     setFilters({ quiet: [], capacity: [], outlets: '' });
-    setQuery('');
+    setMapQuery('');
+    setListQuery('');
     setSort('upvotes_desc');
   };
 
   return (
-    <main className="container">
+    <main className={`container ${tab === 'map' ? 'map-mode' : ''} ${darkMode ? 'theme-dark' : ''}`}>
       <header className="page-header">
         <p className="eyebrow">UF campus guide</p>
-        <h1>Study somewhere that fits.</h1>
+        <h1>StudiousSeeker</h1>
         <p className="subtitle">Explore quiet corners, collaborative tables, and everything in between.</p>
       </header>
 
       <nav className="tabs" aria-label="Study spot views">
-        <button className={tab === 'list' ? 'selected' : ''} type="button" onClick={() => setTab('list')}>☷ <span>List view</span></button>
         <button className={tab === 'map' ? 'selected' : ''} type="button" onClick={() => setTab('map')}>⌖ <span>Map view</span></button>
+        <button className={tab === 'list' ? 'selected' : ''} type="button" onClick={() => setTab('list')}>☷ <span>List view</span></button>
+        <button
+          className="theme-toggle"
+          type="button"
+          onClick={() => setDarkMode((current) => !current)}
+          aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          aria-pressed={darkMode}
+          title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          <span aria-hidden="true">{darkMode ? '☀' : '☾'}</span>
+          <span className="theme-label">{darkMode ? 'Light' : 'Dark'}</span>
+        </button>
       </nav>
 
       <section className="toolbar" aria-label="Study spot filters">
         <div className="search-card">
-          <div className="search-row"><span className="search-icon" aria-hidden="true">⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} type="search" placeholder="Search study spots or buildings..." aria-label="Search study spots" /><button className="expand-button" type="button" onClick={() => setShowFilters(!showFilters)} aria-expanded={showFilters}>{showFilters ? '⌃' : '⌄'}</button></div>
+          <div className="search-row">
+            <span className="search-icon" aria-hidden="true">{tab === 'map' ? '⌖' : '⌕'}</span>
+            <input
+              key={tab}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              type="search"
+              placeholder={tab === 'map' ? 'Search the map...' : 'Search study spots or buildings...'}
+              aria-label={tab === 'map' ? 'Search the map' : 'Search study spots'}
+            />
+            <button className="expand-button" type="button" onClick={() => setShowFilters(!showFilters)} aria-expanded={showFilters}>{showFilters ? '⌃' : '⌄'}</button>
+          </div>
           {showFilters && <Filters filters={filters} setFilters={setFilters} onClear={clearFilters} />}
         </div>
         <label className="sort-card">Sort by
@@ -183,7 +251,7 @@ function App() {
         </label>
       </section>
 
-      {status ? <div className="status error">{status}</div> : tab === 'map' ? <MapView spots={filteredSpots} /> : (
+      {status ? <div className="status error">{status}</div> : tab === 'map' ? <MapView spots={filteredSpots} darkMode={darkMode} /> : (
         <section className="results" aria-live="polite">
           <div className="results-header"><h2>Study spots</h2><span>{filteredSpots.length} of {spots.length} spots</span></div>
           {filteredSpots.length ? <div className="spots-container">{filteredSpots.map((spot) => <article className="spot-card" key={spot.id}><div className="spot-header"><div><h3>{spot.name}</h3><p>{spot.building}</p></div><div className="spot-upvotes">▲ {spot.upvotes}</div></div><div className="spot-details"><span>{spot.quiet_level}</span><span>{spot.has_outlets ? 'Outlets' : 'No outlets'}</span><span>{spot.capacity}</span>{(spot.tags || []).map((tag) => <span key={tag}>{tag}</span>)}</div><p className="spot-hours">Hours: {spot.hours}</p></article>)}</div> : <div className="status">No study spots match these filters.</div>}
