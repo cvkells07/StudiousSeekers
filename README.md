@@ -10,6 +10,7 @@ npm install
 npm start
 ```
 
+
 The demo is a React/Vite app with list and map views. In map view, hover or focus a study-spot dot to see its overview.
 
 Start the API in a second terminal:
