@@ -87,4 +87,28 @@ def create_spot(spot: SpotCreate):
 
 
 @app.post("/spots/{spot_id}/boost")
-def
+def boost_spot(spot_id: int):
+    with SPOTS_LOCK:
+        spots = load_spots()
+        spot = next((item for item in spots if item["id"] == spot_id), None)
+        if spot is None:
+            raise HTTPException(status_code=404, detail="Study spot not found")
+
+        spot["upvotes"] += 1
+        save_spots(spots)
+
+    return {"id": spot_id, "upvotes": spot["upvotes"], "voted": True}
+
+
+@app.delete("/spots/{spot_id}/boost")
+def unboost_spot(spot_id: int):
+    with SPOTS_LOCK:
+        spots = load_spots()
+        spot = next((item for item in spots if item["id"] == spot_id), None)
+        if spot is None:
+            raise HTTPException(status_code=404, detail="Study spot not found")
+
+        spot["upvotes"] = max(0, spot["upvotes"] - 1)
+        save_spots(spots)
+
+    return {"id": spot_id, "upvotes": spot["upvotes"], "voted": False}
