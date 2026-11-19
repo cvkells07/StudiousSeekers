@@ -2,14 +2,39 @@ import json
 import random
 from threading import Lock
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field, constr
 
 app = FastAPI()
 SPOTS_PATH = Path(__file__).parent / "spots.json"
 SPOTS_LOCK = Lock()
+
+
+@app.exception_handler(RequestValidationError)
+async def handle_validation_error(_, error):
+    messages = "; ".join(item["msg"] for item in error.errors())
+    return JSONResponse(
+        status_code=422,
+        content={"error": f"Invalid study spot: {messages}"},
+    )
+
+
+class SpotCreate(BaseModel):
+    name: constr(strip_whitespace=True, min_length=1, max_length=120)
+    description: constr(strip_whitespace=True, min_length=1, max_length=500)
+    building: constr(strip_whitespace=True, min_length=1, max_length=120)
+    quiet_level: Literal["silent", "quiet", "moderate", "loud"]
+    has_outlets: bool
+    capacity: Literal["solo", "small", "large"]
+    hours: constr(strip_whitespace=True, min_length=1, max_length=120)
+    tags: list[constr(strip_whitespace=True, min_length=1, max_length=40)] = Field(
+        default_factory=list, max_length=20
+    )
 
 app.add_middleware(
     CORSMiddleware,
@@ -48,43 +73,18 @@ def get_spots():
     return {"spots": load_spots()}
 
 
+@app.post("/spots", status_code=201)
+def create_spot(spot: SpotCreate):
+    with SPOTS_LOCK:
+        spots = load_spots()
+        created_spot = spot.dict()
+        created_spot["id"] = max((item["id"] for item in spots), default=0) + 1
+        created_spot["upvotes"] = 0
+        spots.append(created_spot)
+        save_spots(spots)
+
+    return created_spot
+
+
 @app.post("/spots/{spot_id}/boost")
-def boost_spot(spot_id: int):
-    with SPOTS_LOCK:
-        spots = load_spots()
-        spot = next((item for item in spots if item.get("id") == spot_id), None)
-        if spot is None:
-            raise HTTPException(status_code=404, detail="Spot not found")
-
-        spot["upvotes"] = spot.get("upvotes", 0) + 1
-        save_spots(spots)
-        return {"id": spot_id, "upvotes": spot["upvotes"], "voted": True}
-
-
-@app.delete("/spots/{spot_id}/boost")
-def remove_boost(spot_id: int):
-    with SPOTS_LOCK:
-        spots = load_spots()
-        spot = next((item for item in spots if item.get("id") == spot_id), None)
-        if spot is None:
-            raise HTTPException(status_code=404, detail="Spot not found")
-
-        spot["upvotes"] = max(0, spot.get("upvotes", 0) - 1)
-        save_spots(spots)
-        return {"id": spot_id, "upvotes": spot["upvotes"], "voted": False}
-
-
-@app.get("/spots/random")
-def get_random_spot():
-    spots = load_spots()
-    if not spots:
-        return JSONResponse(
-            status_code=404,
-            content={"error": "No study spots available"},
-        )
-    return random.choice(spots)
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+def

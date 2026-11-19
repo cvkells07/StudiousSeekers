@@ -3,6 +3,16 @@ import mapboxgl from 'mapbox-gl';
 
 const API_URL = 'http://127.0.0.1:8000/spots';
 const VOTED_SPOTS_STORAGE_KEY = 'studious-seekers-voted-spots';
+const EMPTY_SPOT = {
+  name: '',
+  description: '',
+  building: '',
+  quiet_level: 'quiet',
+  has_outlets: false,
+  capacity: 'solo',
+  hours: '',
+  tags: '',
+};
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN?.trim();
 const HAS_VALID_MAPBOX_TOKEN = MAPBOX_TOKEN?.startsWith('pk.');
 
@@ -179,6 +189,10 @@ function App() {
   const [sort, setSort] = useState('upvotes_desc');
   const [showFilters, setShowFilters] = useState(false);
   const [status, setStatus] = useState('Loading study spots...');
+  const [showAddSpot, setShowAddSpot] = useState(false);
+  const [newSpot, setNewSpot] = useState(EMPTY_SPOT);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionMessage, setSubmissionMessage] = useState('');
   const query = tab === 'map' ? mapQuery : listQuery;
   const setQuery = tab === 'map' ? setMapQuery : setListQuery;
 
@@ -265,13 +279,107 @@ function App() {
     setSort('upvotes_desc');
   };
 
+  const addSpot = async (event) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setSubmissionMessage('');
+
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...newSpot,
+          tags: newSpot.tags.split(',').map((tag) => tag.trim()).filter(Boolean),
+        }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || 'The study spot could not be added.');
+
+      setSpots((currentSpots) => [payload, ...currentSpots]);
+      setNewSpot(EMPTY_SPOT);
+      setShowAddSpot(false);
+      setSubmissionMessage('Study spot added.');
+    } catch (error) {
+      setSubmissionMessage(`Unable to add study spot. ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <main className={`container ${tab === 'map' ? 'map-mode' : ''} ${darkMode ? 'theme-dark' : ''}`}>
       <header className="page-header">
         <p className="eyebrow">UF campus guide</p>
         <h1>StudiousSeeker</h1>
         <p className="subtitle">Explore quiet corners, collaborative tables, and everything in between.</p>
+        <button
+          className="add-spot-toggle"
+          type="button"
+          onClick={() => { setShowAddSpot(!showAddSpot); setSubmissionMessage(''); }}
+          aria-label={showAddSpot ? 'Close add study spot form' : 'Add a study spot'}
+          aria-expanded={showAddSpot}
+          aria-controls="add-spot-form"
+          title={showAddSpot ? 'Close form' : 'Add a study spot'}
+        >
+          <span aria-hidden="true">{showAddSpot ? '×' : '+'}</span>
+        </button>
       </header>
+
+      {showAddSpot && (
+        <form className="add-spot-form" id="add-spot-form" onSubmit={addSpot}>
+          <div className="add-spot-heading">
+            <div>
+              <p className="eyebrow">Share with students</p>
+              <h2>Add a study spot</h2>
+            </div>
+            <p className="form-note">The server assigns the spot ID and starts upvotes at 0.</p>
+          </div>
+          <div className="form-grid">
+            <label>
+              Spot name
+              <input required maxLength="120" value={newSpot.name} onChange={(event) => setNewSpot({ ...newSpot, name: event.target.value })} />
+            </label>
+            <label>
+              Building
+              <input required maxLength="120" value={newSpot.building} onChange={(event) => setNewSpot({ ...newSpot, building: event.target.value })} />
+            </label>
+            <label className="form-wide">
+              Description
+              <textarea required maxLength="500" rows="3" value={newSpot.description} onChange={(event) => setNewSpot({ ...newSpot, description: event.target.value })} />
+            </label>
+            <label>
+              Quiet level
+              <select value={newSpot.quiet_level} onChange={(event) => setNewSpot({ ...newSpot, quiet_level: event.target.value })}>
+                {['silent', 'quiet', 'moderate', 'loud'].map((level) => <option key={level} value={level}>{level}</option>)}
+              </select>
+            </label>
+            <label>
+              Capacity
+              <select value={newSpot.capacity} onChange={(event) => setNewSpot({ ...newSpot, capacity: event.target.value })}>
+                {['solo', 'small', 'large'].map((capacity) => <option key={capacity} value={capacity}>{capacity}</option>)}
+              </select>
+            </label>
+            <label>
+              Hours
+              <input required maxLength="120" placeholder="e.g. 8am-10pm or 24/7" value={newSpot.hours} onChange={(event) => setNewSpot({ ...newSpot, hours: event.target.value })} />
+            </label>
+            <label>
+              Tags <span className="field-hint">(comma-separated, optional)</span>
+              <input placeholder="e.g. quiet, group-friendly" value={newSpot.tags} onChange={(event) => setNewSpot({ ...newSpot, tags: event.target.value })} />
+            </label>
+            <label className="outlets-control">
+              <input type="checkbox" checked={newSpot.has_outlets} onChange={(event) => setNewSpot({ ...newSpot, has_outlets: event.target.checked })} />
+              Has outlets
+            </label>
+          </div>
+          <div className="form-footer">
+            <p className="form-note">Quiet level: silent, quiet, moderate, or loud. Capacity: solo, small, or large.</p>
+            <button className="primary-button" type="submit" disabled={isSubmitting}>{isSubmitting ? 'Adding...' : 'Add spot'}</button>
+          </div>
+        </form>
+      )}
+      {submissionMessage && <p className={`submission-message ${submissionMessage.startsWith('Unable') ? 'error' : ''}`} role="status">{submissionMessage}</p>}
 
       <nav className="tabs" aria-label="Study spot views">
         <button className={tab === 'map' ? 'selected' : ''} type="button" onClick={() => setTab('map')}>🌐 <span>Map view</span></button>
@@ -334,6 +442,7 @@ function App() {
                   {upvotingSpotId === spot.id ? 'Saving…' : `▲ ${spot.upvotes}`}
                 </button>
               </div>
+              <p className="spot-description">{spot.description}</p>
               <div className="spot-details"><span>{spot.quiet_level}</span><span>{spot.has_outlets ? 'Outlets' : 'No outlets'}</span><span>{spot.capacity}</span>{(spot.tags || []).map((tag) => <span key={tag}>{tag}</span>)}</div>
               <p className="spot-hours">Hours: {spot.hours}</p>
             </article>;

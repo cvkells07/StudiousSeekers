@@ -53,6 +53,29 @@ Returns all study spots.
 }
 ```
 
+### `POST /spots`
+Adds a study spot using the user-provided characteristics from the data model. The server assigns a unique `id` and initializes `upvotes` to `0`; clients must not supply either field.
+
+**Request:**
+```json
+{
+  "name": "Library 2nd Floor Quiet Zone",
+  "description": "A quiet place to study. Outlets are available.",
+  "building": "Main Library",
+  "quiet_level": "silent",
+  "has_outlets": true,
+  "capacity": "large",
+  "hours": "24/7",
+  "tags": ["quiet", "outlets"]
+}
+```
+
+`name`, `description`, `building`, and `hours` must be non-empty strings. The allowed `quiet_level` values are `"silent"`, `"quiet"`, `"moderate"`, and `"loud"`; `capacity` must be `"solo"`, `"small"`, or `"large"`; `has_outlets` must be a boolean. `tags` is an optional array of up to 20 non-empty strings (40 characters each). Text limits are 120 characters for `name`, `building`, and `hours`, and 500 for `description`.
+
+**Response (201):** the created Study Spot object, including its server-assigned `id` and `upvotes: 0`.
+
+**Error response (422):** `{"error": "Invalid study spot: ..."}` for invalid input.
+
 ### `GET /spots/random`
 Returns one randomly selected study spot using the Study Spot object shape above.
 
