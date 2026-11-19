@@ -2,14 +2,17 @@
   {
     "id": 1,
     "name": "Marston Basement (Collaboration Zone)",
-    "description":"A bustling, lively subterranean workspace perfect for group projects and late-night studying.",
+    "description": "A bustling, lively subterranean workspace perfect for group projects and late-night studying.",
+    "image": "/images/marstonbasement.jpg",
     "building": "Marston Science Library",
     "quiet_level": "moderate",
     "has_outlets": true,
     "capacity": "large",
     "hours": "24/5",
     "upvotes": 0,
-    "tags": ["group-friendly"],
+    "tags": [
+      "group-friendly"
+    ],
     "link": "https://maps.app.goo.gl/qFqVq4PXj7x6VAXj7",
     "latitude": 29.648167447747994,
     "longitude": -82.34368138712908
@@ -18,13 +21,17 @@
     "id": 2,
     "name": "Library West 3rd Floor Cubicles",
     "description": "Individual cubicles provide a silent place to study - good for exam prep.",
+    "image": "/images/librarywest3rdfloor.jpg",
     "building": "Library West",
     "quiet_level": "silent",
     "has_outlets": true,
     "capacity": "solo",
     "hours": "24/7",
     "upvotes": 5,
-    "tags": ["quiet", "empty"],
+    "tags": [
+      "quiet",
+      "empty"
+    ],
     "link": "https://maps.app.goo.gl/DUcW8b5kZCixtX7b8",
     "latitude": 29.651378679250772,
     "longitude": -82.34287880427092
@@ -33,13 +40,18 @@
     "id": 3,
     "name": "Honors Village 5 Residential Study Rooms",
     "description": "Modern study rooms offer a quiet setting for a small group. These rooms may require reservation.",
+    "image": "/images/ufhonorsbuilding5.jpg",
     "building": "Honors Village",
     "quiet_level": "quiet",
     "has_outlets": true,
     "capacity": "small",
     "hours": "24/7",
-    "upvotes": 3,
-    "tags": ["modern", "frequently-booked", "empty"],
+    "upvotes": 4,
+    "tags": [
+      "modern",
+      "frequently-booked",
+      "empty"
+    ],
     "link": "https://maps.app.goo.gl/bW8Z3F3uizutnSZUA",
     "latitude": 29.645041380071092,
     "longitude": -82.34165135108046
@@ -48,88 +60,118 @@
     "id": 4,
     "name": "Reitz Union Food Court Tables",
     "description": "Large tables near food suit a lively study session.",
+    "image": "/images/reitzunionfoodcourt.jpg",
     "building": "J. Wayne Reitz Union",
     "quiet_level": "loud",
     "has_outlets": false,
     "capacity": "large",
     "hours": "7am-11pm",
-    "upvotes": 8,
-    "tags": ["conversational", "food-nearby", "packed"],
+    "upvotes": 9,
+    "tags": [
+      "conversational",
+      "food-nearby",
+      "packed"
+    ],
     "link": "https://maps.app.goo.gl/Ag4avab5E6gLH8Wy7",
     "latitude": 29.646024857472547,
     "longitude": -82.3476089406644
-  }, 
-    {
+  },
+  {
     "id": 6,
     "name": "Library West 2nd Floor Commons",
     "description": "A spacious, social study area with moderate noise, outlets, and Starbucks nearby.",
+    "image": "/images/librarywest2ndflooor.jpg",
     "building": "Library West",
     "quiet_level": "moderate",
     "has_outlets": true,
     "capacity": "large",
     "hours": "24/7",
     "upvotes": 0,
-    "tags": ["social", "starbucks-nearby", "moderate-busyness"],
+    "tags": [
+      "social",
+      "starbucks-nearby",
+      "moderate-busyness"
+    ],
     "link": "https://maps.app.goo.gl/DUcW8b5kZCixtX7b8",
-    "latitude": 29.651378679250708,
+    "latitude": 29.65137867925071,
     "longitude": -82.34287880427001
   },
   {
     "id": 7,
     "name": "Library West 4th Floor Graduate Floors",
     "description": "Silent cubicles offer a focused place for individual study.",
+    "image": "/images/librarywest4thfloor.jpg",
     "building": "Library West",
     "quiet_level": "silent",
     "has_outlets": true,
     "capacity": "solo",
     "hours": "24/7",
-    "upvotes": 0,
-    "tags": ["silent", "cubicles", "empty"],
+    "upvotes": 10,
+    "tags": [
+      "silent",
+      "cubicles",
+      "empty"
+    ],
     "link": "https://maps.app.goo.gl/DUcW8b5kZCixtX7b8",
-    "latitude": 29.651378679250900,
-    "longitude": -82.34287880427201
+    "latitude": 29.6513786792509,
+    "longitude": -82.342878804272
   },
   {
     "id": 8,
     "name": "Marston 2nd Floor Collaboration Pods",
     "description": "Small collaboration pods with whiteboards support group work. The area has moderate noise and outlets.",
+    "image": "/images/marston2ndfloor.jpg",
     "building": "Marston Science Library",
     "quiet_level": "moderate",
     "has_outlets": true,
     "capacity": "small",
     "hours": "24/5",
     "upvotes": 0,
-    "tags": ["whiteboards", "group-friendly", "packed"],
+    "tags": [
+      "whiteboards",
+      "group-friendly",
+      "packed"
+    ],
     "link": "https://maps.app.goo.gl/qFqVq4PXj7x6VAXj7",
-    "latitude": 29.648167447747002,
+    "latitude": 29.648167447747003,
     "longitude": -82.34368138712809
   },
   {
     "id": 9,
     "name": "Marston 4th Floor Silent Cubicles",
     "description": "Silent cubicles provide a focused spot for individual study, with outlets available.",
+    "image": "/images/marston4thfloor.jpg",
     "building": "Marston Science Library",
     "quiet_level": "silent",
     "has_outlets": true,
     "capacity": "solo",
     "hours": "24/5",
     "upvotes": 0,
-    "tags": ["silent", "outlets", "moderate-busyness"],
+    "tags": [
+      "silent",
+      "outlets",
+      "moderate-busyness"
+    ],
     "link": "https://maps.app.goo.gl/qFqVq4PXj7x6VAXj7",
-    "latitude": 29.648167447747708,
+    "latitude": 29.648167447747706,
     "longitude": -82.34368138712009
   },
   {
     "id": 10,
     "name": "Newell Hall 1st Floor Cafe Area",
     "description": "A lively cafe area for conversational study, with outlets and Chick-fil-A nearby.",
+    "image": "/images/newellhall.jpg",
     "building": "Newell Hall",
     "quiet_level": "loud",
     "has_outlets": true,
     "capacity": "large",
     "hours": "24/7",
     "upvotes": 0,
-    "tags": ["conversational", "chick-fil-a-nearby", "packed"],
+    "tags": [
+      "conversational",
+      "chick-fil-a-nearby",
+      "packed"
+    ],
     "link": "https://maps.app.goo.gl/8uoyYse2DkFvi5h49",
     "latitude": 29.64917415781981,
     "longitude": -82.34487094201218
@@ -138,28 +180,38 @@
     "id": 11,
     "name": "Newell Hall 4th Floor Quiet Attic",
     "description": "A quiet solo-study area with comfortable chairs and outlets.",
+    "image": "/images/newellhall4thfloor.jpg",
     "building": "Newell Hall",
     "quiet_level": "quiet",
     "has_outlets": true,
     "capacity": "solo",
     "hours": "24/7",
     "upvotes": 0,
-    "tags": ["quiet", "comfy-chairs", "empty"],
+    "tags": [
+      "quiet",
+      "comfy-chairs",
+      "empty"
+    ],
     "link": "https://maps.app.goo.gl/8uoyYse2DkFvi5h49",
     "latitude": 29.64917415781819,
     "longitude": -82.34487094201812
   },
-    {
+  {
     "id": 12,
     "name": "Reitz Union 2nd Floor Study Tables",
     "description": "Indoor tables suit small groups in a moderately busy area, with outlets and food nearby.",
+    "image": "/images/reitzunion2ndfloor.jpg",
     "building": "J. Wayne Reitz Union",
     "quiet_level": "moderate",
     "has_outlets": true,
     "capacity": "small",
     "hours": "7am-11pm",
     "upvotes": 0,
-    "tags": ["indoors", "near-food", "moderate-busyness"],
+    "tags": [
+      "indoors",
+      "near-food",
+      "moderate-busyness"
+    ],
     "link": "https://maps.app.goo.gl/MKh5fVGdyWa23eNq5",
     "latitude": 29.64646104075068,
     "longitude": -82.34784597692867
@@ -168,13 +220,18 @@
     "id": 13,
     "name": "Honors Village Building 1 Study Lounges",
     "description": "A modern, quiet lounge for small groups, with outlets available.",
+    "image": "/images/honorsvillagebuilding1.jpg",
     "building": "Honors Village (Bldg 1)",
     "quiet_level": "quiet",
     "has_outlets": true,
     "capacity": "small",
     "hours": "24/7",
-    "upvotes": 0,
-    "tags": ["modern", "honors-students", "empty"],
+    "upvotes": 10,
+    "tags": [
+      "modern",
+      "honors-students",
+      "empty"
+    ],
     "link": "https://maps.app.goo.gl/VPfTRhzMPuycRYpU6",
     "latitude": 29.645413,
     "longitude": -82.342301
@@ -183,13 +240,18 @@
     "id": 14,
     "name": "Honors Village Building 2 Collaboration Spaces",
     "description": "Spacious collaboration areas with whiteboards for group work. The noise level is moderate and outlets are available.",
+    "image": "/images/honorsvillagebuilding2.jpg",
     "building": "Honors Village (Bldg 2)",
     "quiet_level": "moderate",
     "has_outlets": true,
     "capacity": "large",
     "hours": "24/7",
     "upvotes": 0,
-    "tags": ["whiteboards", "fresh-facilities", "moderate-busyness"],
+    "tags": [
+      "whiteboards",
+      "fresh-facilities",
+      "moderate-busyness"
+    ],
     "link": "https://maps.app.goo.gl/VPfTRhzMPuycRYpU6",
     "latitude": 29.645814,
     "longitude": -82.342123
@@ -198,13 +260,16 @@
     "id": 15,
     "name": "UF Education Library Main Floor",
     "description": "A quiet library floor with room for a larger group and outlets available.",
+    "image": "/images/educationlibrary.jpg",
     "building": "Norman Hall",
     "quiet_level": "quiet",
     "has_outlets": true,
     "capacity": "large",
     "hours": "8am-9pm",
     "upvotes": 0,
-    "tags": ["empty"],
+    "tags": [
+      "empty"
+    ],
     "link": "https://maps.app.goo.gl/gW2XsWQFLmdWvK8F6",
     "latitude": 29.646672612929585,
     "longitude": -82.33769529170178
@@ -213,43 +278,55 @@
     "id": 16,
     "name": "Marston 5th Floor Silent Study Area",
     "description": "This area offers silent individual study in cubicles, with outlets available.",
+    "image": "/images/marston5th%20floor.jpg",
     "building": "Marston Science Library",
     "quiet_level": "silent",
     "has_outlets": true,
     "capacity": "solo",
     "hours": "24/5",
     "upvotes": 0,
-    "tags": ["absolute-silence", "cubicles", "packed"],
+    "tags": [
+      "absolute-silence",
+      "cubicles",
+      "packed"
+    ],
     "link": "https://maps.app.goo.gl/qFqVq4PXj7x6VAXj7",
-    "latitude": 29.648167447747606,
-    "longitude": -82.34368138712490
+    "latitude": 29.648167447747607,
+    "longitude": -82.3436813871249
   },
   {
     "id": 17,
     "name": "Health Science Center Library 2nd Floor",
     "description": "A quiet, spacious library study area with outlets available.",
+    "image": "/images/healthsciencecenterlibrary.jpg",
     "building": "Communicore Building",
     "quiet_level": "quiet",
     "has_outlets": true,
     "capacity": "large",
     "hours": "8am-11pm",
     "upvotes": 0,
-    "tags": ["outlets"],
-    "link":"https://maps.app.goo.gl/9UgKMeHRoAXmXUBQ9",
+    "tags": [
+      "outlets"
+    ],
+    "link": "https://maps.app.goo.gl/9UgKMeHRoAXmXUBQ9",
     "latitude": 29.641122372557806,
     "longitude": -82.34492901925748
   },
-    {
+  {
     "id": 18,
     "name": "Reitz Union 3rd Floor Lounges",
     "description": "Indoor lounges provide a moderately quiet spot for small groups, with outlets available.",
+    "image": "/images/reitzunion3rd.jpg",
     "building": "J. Wayne Reitz Union",
     "quiet_level": "moderate",
     "has_outlets": true,
     "capacity": "small",
     "hours": "7am-11pm",
     "upvotes": 0,
-    "tags": ["indoors", "empty"],
+    "tags": [
+      "indoors",
+      "empty"
+    ],
     "link": "https://maps.app.goo.gl/WqQb7oRcGvj8oY8XA",
     "latitude": 29.64637645871828,
     "longitude": -82.3476630111904
@@ -258,13 +335,18 @@
     "id": 19,
     "name": "Malachowsky Hall 2nd Floor Study Tables",
     "description": "Modern tables offer room for larger collaborative groups. The area is moderately noisy and can be busy.",
+    "image": "/images/malachowsky2ndfloor.jpg",
     "building": "Malachowsky Hall",
     "quiet_level": "moderate",
     "has_outlets": true,
     "capacity": "large",
     "hours": "7am-10pm",
     "upvotes": 0,
-    "tags": ["modern", "collaborative", "packed"],
+    "tags": [
+      "modern",
+      "collaborative",
+      "packed"
+    ],
     "link": "https://maps.app.goo.gl/WUeuBCVYfcsK7fQw9",
     "latitude": 29.64405521047269,
     "longitude": -82.34727397147655
@@ -273,13 +355,18 @@
     "id": 20,
     "name": "Malachowsky Hall 3rd Floor Pods",
     "description": "Clean, high-tech pods provide a quiet spot for a small group, with outlets available.",
+    "image": "/images/malachowsky3rdfloor.jpg",
     "building": "Malachowsky Hall",
     "quiet_level": "quiet",
     "has_outlets": true,
     "capacity": "small",
     "hours": "7am-10pm",
     "upvotes": 0,
-    "tags": ["clean", "high-tech", "moderate-busyness"],
+    "tags": [
+      "clean",
+      "high-tech",
+      "moderate-busyness"
+    ],
     "link": "https://maps.app.goo.gl/WUeuBCVYfcsK7fQw9",
     "latitude": 29.644025,
     "longitude": -82.347523
@@ -288,13 +375,18 @@
     "id": 21,
     "name": "Library West Windowsill Bar Seating",
     "description": "Individual bar seating offers natural light and a plaza view, with outlets available and moderate noise.",
+    "image": "/images/librarywestbarstoolseating.jpg",
     "building": "Library West",
     "quiet_level": "moderate",
     "has_outlets": true,
     "capacity": "solo",
     "hours": "24/7",
-    "upvotes": 0,
-    "tags": ["plaza-view", "natural-light", "packed"],
+    "upvotes": 12,
+    "tags": [
+      "plaza-view",
+      "natural-light",
+      "packed"
+    ],
     "link": "https://maps.app.goo.gl/DUcW8b5kZCixtX7b8",
     "latitude": 29.6511440760503,
     "longitude": -82.34261128702764
@@ -303,16 +395,20 @@
     "id": 22,
     "name": "Reitz Union Game Room",
     "description": "A small-capacity study spot in Reitz Union listed as quiet, with outlets and noon-to-11pm hours.",
+    "image": "/images/reitzuniongameroom.jpg",
     "building": "Reitz Union",
     "quiet_level": "quiet",
     "has_outlets": true,
     "capacity": "small",
     "hours": "12pm-11pm",
     "upvotes": 0,
-    "tags": ["plaza-view", "natural-light", "packed"],
+    "tags": [
+      "plaza-view",
+      "natural-light",
+      "packed"
+    ],
     "link": "https://maps.app.goo.gl/nf3Hj5Ga8m7AdFnX8",
     "latitude": 29.64638015075832,
     "longitude": -82.34795070576412
   }
 ]
-

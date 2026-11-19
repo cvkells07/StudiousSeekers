@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 
 const API_URL = 'http://127.0.0.1:8000/spots';
+const VOTED_SPOTS_STORAGE_KEY = 'studious-seekers-voted-spots';
 const EMPTY_SPOT = {
   name: '',
   description: '',
@@ -177,6 +178,9 @@ function MapView({ spots, darkMode }) {
 
 function App() {
   const [spots, setSpots] = useState([]);
+  const [votedSpotIds, setVotedSpotIds] = useState([]);
+  const [upvotingSpotId, setUpvotingSpotId] = useState(null);
+  const [upvoteError, setUpvoteError] = useState('');
   const [mapQuery, setMapQuery] = useState('');
   const [listQuery, setListQuery] = useState('');
   const [tab, setTab] = useState('map');
@@ -193,6 +197,21 @@ function App() {
   const setQuery = tab === 'map' ? setMapQuery : setListQuery;
 
   useEffect(() => {
+    try {
+      const savedVotes = window.localStorage.getItem(VOTED_SPOTS_STORAGE_KEY);
+      if (savedVotes === null) return;
+
+      const parsedVotes = JSON.parse(savedVotes);
+      if (!Array.isArray(parsedVotes) || parsedVotes.some((id) => !Number.isInteger(id))) {
+        throw new Error('Saved vote data is invalid.');
+      }
+      setVotedSpotIds([...new Set(parsedVotes)]);
+    } catch (error) {
+      setUpvoteError(`Unable to load saved votes. ${error.message}`);
+    }
+  }, []);
+
+  useEffect(() => {
     fetch(API_URL)
       .then((response) => {
         if (!response.ok) throw new Error(`The API returned ${response.status}.`);
@@ -206,6 +225,42 @@ function App() {
       })
       .catch((error) => setStatus(`Unable to load study spots. ${error.message} Start the API at ${API_URL}.`));
   }, []);
+
+  const handleVote = async (spot) => {
+    const isVoted = votedSpotIds.includes(spot.id);
+    setUpvoteError('');
+    setUpvotingSpotId(spot.id);
+
+    try {
+      const response = await fetch(`${API_URL}/${spot.id}/boost`, {
+        method: isVoted ? 'DELETE' : 'POST',
+      });
+      if (!response.ok) throw new Error(`The API returned ${response.status}.`);
+      const result = await response.json();
+      if (result.id !== spot.id || !Number.isFinite(result.upvotes) || result.voted !== !isVoted) {
+        throw new Error('The API response did not contain the updated vote state.');
+      }
+
+      setSpots((current) => current.map((item) => (
+        item.id === result.id ? { ...item, upvotes: result.upvotes } : item
+      )));
+      const nextVotedSpotIds = new Set(votedSpotIds);
+      if (result.voted) nextVotedSpotIds.add(spot.id);
+      else nextVotedSpotIds.delete(spot.id);
+      const nextVotedSpotIdList = [...nextVotedSpotIds];
+      setVotedSpotIds(nextVotedSpotIdList);
+
+      try {
+        window.localStorage.setItem(VOTED_SPOTS_STORAGE_KEY, JSON.stringify(nextVotedSpotIdList));
+      } catch (error) {
+        setUpvoteError(`Vote updated, but this browser could not save it. ${error.message}`);
+      }
+    } catch (error) {
+      setUpvoteError(`Unable to update vote. ${error.message}`);
+    } finally {
+      setUpvotingSpotId(null);
+    }
+  };
 
   const filteredSpots = useMemo(() => spots
     .filter((spot) => {
@@ -258,13 +313,21 @@ function App() {
         <p className="eyebrow">UF campus guide</p>
         <h1>StudiousSeeker</h1>
         <p className="subtitle">Explore quiet corners, collaborative tables, and everything in between.</p>
-        <button className="primary-button add-spot-toggle" type="button" onClick={() => { setShowAddSpot(!showAddSpot); setSubmissionMessage(''); }}>
-          {showAddSpot ? 'Cancel' : '+ Add a study spot'}
+        <button
+          className="add-spot-toggle"
+          type="button"
+          onClick={() => { setShowAddSpot(!showAddSpot); setSubmissionMessage(''); }}
+          aria-label={showAddSpot ? 'Close add study spot form' : 'Add a study spot'}
+          aria-expanded={showAddSpot}
+          aria-controls="add-spot-form"
+          title={showAddSpot ? 'Close form' : 'Add a study spot'}
+        >
+          <span aria-hidden="true">{showAddSpot ? '×' : '+'}</span>
         </button>
       </header>
 
       {showAddSpot && (
-        <form className="add-spot-form" onSubmit={addSpot}>
+        <form className="add-spot-form" id="add-spot-form" onSubmit={addSpot}>
           <div className="add-spot-heading">
             <div>
               <p className="eyebrow">Share with students</p>
@@ -361,7 +424,29 @@ function App() {
       {status ? <div className="status error">{status}</div> : tab === 'map' ? <MapView spots={filteredSpots} darkMode={darkMode} /> : (
         <section className="results" aria-live="polite">
           <div className="results-header"><h2>Study spots</h2><span>{filteredSpots.length} of {spots.length} spots</span></div>
-          {filteredSpots.length ? <div className="spots-container">{filteredSpots.map((spot) => <article className="spot-card" key={spot.id}><div className="spot-header"><div><h3>{spot.name}</h3><p>{spot.building}</p></div><div className="spot-upvotes">▲ {spot.upvotes}</div></div><p className="spot-description">{spot.description}</p><div className="spot-details"><span>{spot.quiet_level}</span><span>{spot.has_outlets ? 'Outlets' : 'No outlets'}</span><span>{spot.capacity}</span>{(spot.tags || []).map((tag) => <span key={tag}>{tag}</span>)}</div><p className="spot-hours">Hours: {spot.hours}</p></article>)}</div> : <div className="status">No study spots match these filters.</div>}
+          {upvoteError && <p className="status error" role="alert">{upvoteError}</p>}
+          {filteredSpots.length ? <div className="spots-container">{filteredSpots.map((spot) => {
+            const isVoted = votedSpotIds.includes(spot.id);
+            return <article className="spot-card" key={spot.id}>
+              {spot.image && <img className="spot-image" src={spot.image} alt={spot.name} loading="lazy" />}
+              <div className="spot-header">
+                <div><h3>{spot.name}</h3><p>{spot.building}</p></div>
+                <button
+                  className={`spot-upvote-button${isVoted ? ' is-upvoted' : ''}`}
+                  type="button"
+                  disabled={upvotingSpotId !== null}
+                  onClick={() => handleVote(spot)}
+                  aria-label={isVoted ? `Remove upvote from ${spot.name}; ${spot.upvotes} votes` : `Upvote ${spot.name}; ${spot.upvotes} votes`}
+                  aria-pressed={isVoted}
+                >
+                  {upvotingSpotId === spot.id ? 'Saving…' : `▲ ${spot.upvotes}`}
+                </button>
+              </div>
+              <p className="spot-description">{spot.description}</p>
+              <div className="spot-details"><span>{spot.quiet_level}</span><span>{spot.has_outlets ? 'Outlets' : 'No outlets'}</span><span>{spot.capacity}</span>{(spot.tags || []).map((tag) => <span key={tag}>{tag}</span>)}</div>
+              <p className="spot-hours">Hours: {spot.hours}</p>
+            </article>;
+          })}</div> : <div className="status">No study spots match these filters.</div>}
         </section>
       )}
     </main>
