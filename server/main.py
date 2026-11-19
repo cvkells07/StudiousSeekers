@@ -1,18 +1,22 @@
 import json
-import random
 from threading import Lock
 from pathlib import Path
-from typing import Literal
+from typing import Annotated, Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, constr
+from pydantic import BaseModel, Field, StringConstraints
 
 app = FastAPI()
 SPOTS_PATH = Path(__file__).parent / "spots.json"
 SPOTS_LOCK = Lock()
+ShortText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=120)]
+DescriptionText = Annotated[
+    str, StringConstraints(strip_whitespace=True, min_length=1, max_length=500)
+]
+TagText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=40)]
 
 
 @app.exception_handler(RequestValidationError)
@@ -25,16 +29,14 @@ async def handle_validation_error(_, error):
 
 
 class SpotCreate(BaseModel):
-    name: constr(strip_whitespace=True, min_length=1, max_length=120)
-    description: constr(strip_whitespace=True, min_length=1, max_length=500)
-    building: constr(strip_whitespace=True, min_length=1, max_length=120)
+    name: ShortText
+    description: DescriptionText
+    building: ShortText
     quiet_level: Literal["silent", "quiet", "moderate", "loud"]
     has_outlets: bool
     capacity: Literal["solo", "small", "large"]
-    hours: constr(strip_whitespace=True, min_length=1, max_length=120)
-    tags: list[constr(strip_whitespace=True, min_length=1, max_length=40)] = Field(
-        default_factory=list, max_length=20
-    )
+    hours: ShortText
+    tags: list[TagText] = Field(default_factory=list, max_length=20)
 
 app.add_middleware(
     CORSMiddleware,
@@ -77,7 +79,7 @@ def get_spots():
 def create_spot(spot: SpotCreate):
     with SPOTS_LOCK:
         spots = load_spots()
-        created_spot = spot.dict()
+        created_spot = spot.model_dump()
         created_spot["id"] = max((item["id"] for item in spots), default=0) + 1
         created_spot["upvotes"] = 0
         spots.append(created_spot)
@@ -112,3 +114,9 @@ def unboost_spot(spot_id: int):
         save_spots(spots)
 
     return {"id": spot_id, "upvotes": spot["upvotes"], "voted": False}
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="127.0.0.1", port=8000)
