@@ -258,13 +258,21 @@ function App() {
         <p className="eyebrow">UF campus guide</p>
         <h1>StudiousSeeker</h1>
         <p className="subtitle">Explore quiet corners, collaborative tables, and everything in between.</p>
-        <button className="primary-button add-spot-toggle" type="button" onClick={() => { setShowAddSpot(!showAddSpot); setSubmissionMessage(''); }}>
-          {showAddSpot ? 'Cancel' : '+ Add a study spot'}
+        <button
+          className="add-spot-toggle"
+          type="button"
+          onClick={() => { setShowAddSpot(!showAddSpot); setSubmissionMessage(''); }}
+          aria-label={showAddSpot ? 'Close add study spot form' : 'Add a study spot'}
+          aria-expanded={showAddSpot}
+          aria-controls="add-spot-form"
+          title={showAddSpot ? 'Close form' : 'Add a study spot'}
+        >
+          <span aria-hidden="true">{showAddSpot ? '×' : '+'}</span>
         </button>
       </header>
 
       {showAddSpot && (
-        <form className="add-spot-form" onSubmit={addSpot}>
+        <form className="add-spot-form" id="add-spot-form" onSubmit={addSpot}>
           <div className="add-spot-heading">
             <div>
               <p className="eyebrow">Share with students</p>
