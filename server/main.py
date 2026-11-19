@@ -4,14 +4,15 @@ from threading import Lock
 from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, constr
 
 app = FastAPI()
-spots_lock = Lock()
+SPOTS_PATH = Path(__file__).parent / "spots.json"
+SPOTS_LOCK = Lock()
 
 
 @app.exception_handler(RequestValidationError)
@@ -51,8 +52,17 @@ app.add_middleware(
 
 
 def load_spots():
-    with (Path(__file__).parent / "spots.json").open(encoding="utf-8") as file:
+    with SPOTS_PATH.open(encoding="utf-8") as file:
         return json.load(file)
+
+
+def save_spots(spots):
+    temporary_path = SPOTS_PATH.with_name(f".{SPOTS_PATH.name}.tmp")
+    with temporary_path.open("w", encoding="utf-8") as file:
+        json.dump(spots, file, indent=2)
+        file.write("\n")
+    temporary_path.replace(SPOTS_PATH)
+
 
 @app.get("/")
 def read_root():
@@ -65,32 +75,16 @@ def get_spots():
 
 @app.post("/spots", status_code=201)
 def create_spot(spot: SpotCreate):
-    with spots_lock:
+    with SPOTS_LOCK:
         spots = load_spots()
         created_spot = spot.dict()
         created_spot["id"] = max((item["id"] for item in spots), default=0) + 1
         created_spot["upvotes"] = 0
         spots.append(created_spot)
-
-        spots_path = Path(__file__).parent / "spots.json"
-        temporary_path = spots_path.with_suffix(".json.tmp")
-        temporary_path.write_text(json.dumps(spots, indent=2) + "\n", encoding="utf-8")
-        temporary_path.replace(spots_path)
+        save_spots(spots)
 
     return created_spot
 
 
-@app.get("/spots/random")
-def get_random_spot():
-    spots = load_spots()
-    if not spots:
-        return JSONResponse(
-            status_code=404,
-            content={"error": "No study spots available"},
-        )
-    return random.choice(spots)
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+@app.post("/spots/{spot_id}/boost")
+def

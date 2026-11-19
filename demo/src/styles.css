@@ -140,6 +140,12 @@ h1 { font-family: Georgia, serif; font-size: clamp(32px, 5vw, 52px); margin-top:
   .container:not(.map-mode) .search-card { width: 100%; }
   .container:not(.map-mode) .results-header { align-items: flex-start; flex-direction: column; gap: 6px; }
 }
+.spot-upvote-button { background: var(--cream-dark); border: 0; border-radius: 20px; color: var(--accent-dark); font-size: 14px; font-weight: 700; padding: 7px 10px; white-space: nowrap; }
+.spot-upvote-button:hover:not(:disabled) { background: var(--line); }
+.spot-upvote-button.is-upvoted { background: #d7ad8b; color: #4a3424; }
+.spot-upvote-button.is-upvoted:hover:not(:disabled) { background: #c9956e; }
+.spot-upvote-button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.spot-upvote-button:disabled { cursor: wait; opacity: .7; }
 .add-spot-toggle {
   align-items: center;
   background: var(--accent);
