@@ -61,18 +61,15 @@ Returns one randomly selected study spot using the Study Spot object shape above
 **Error response (404):** returned when no study spots are available.
 
 ### `GET /spots?quiet_level=silent&has_outlets=true`
-<<<<<<< HEAD
 
 Returns filtered spots. Query parameters match the field names above exactly. Multiple filters can be combined.
-=======
 Returns filtered spots. Query parameters match the field names above exactly. Multiple filters can be combined. The current demo applies these filters client-side after loading the complete response.
->>>>>>> 0b22a32f64397bc446457f244e50be9aa6fcedaf
 
 **Response:** same shape as `GET /spots`, just a smaller filtered list.
 
 ### `POST /spots/{id}/boost`
 
-Increments the upvote count for a specific spot by 1.
+Adds an upvote for a specific spot and increments its count by 1.
 
 **Request:** no body needed, just the spot's `id` in the URL.
 
@@ -81,9 +78,18 @@ Increments the upvote count for a specific spot by 1.
 ```json
 {
   "id": 1,
-  "upvotes": 13
+  "upvotes": 13,
+  "voted": true
 }
 ```
+
+### `DELETE /spots/{id}/boost`
+
+Removes an upvote and decrements the count by 1, never below 0. The demo remembers the voted spots in the current browser's local storage.
+
+**Request:** no body needed, just the spot's `id` in the URL.
+
+**Response:** the same shape as `POST /spots/{id}/boost`, with `"voted": false`.
 
 ### `GET /spots?sort=upvotes`
 
