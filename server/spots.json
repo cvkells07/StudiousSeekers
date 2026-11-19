@@ -9,7 +9,10 @@
     "capacity": "large",
     "hours": "24/5",
     "upvotes": 0,
-    "tags": ["group-friendly"]
+    "tags": ["group-friendly"],
+    "link": "https://maps.app.goo.gl/qFqVq4PXj7x6VAXj7",
+    "latitude": 29.648167447747994,
+    "longitude": -82.34368138712908
   },
   {
     "id": 2,
@@ -21,7 +24,10 @@
     "capacity": "solo",
     "hours": "24/7",
     "upvotes": 5,
-    "tags": ["quiet", "empty"]
+    "tags": ["quiet", "empty"],
+    "link": "https://maps.app.goo.gl/DUcW8b5kZCixtX7b8",
+    "latitude": 29.651378679250772,
+    "longitude": -82.34287880427092
   },
   {
     "id": 3,
@@ -33,7 +39,10 @@
     "capacity": "small",
     "hours": "24/7",
     "upvotes": 3,
-    "tags": ["modern", "frequently-booked", "empty"]
+    "tags": ["modern", "frequently-booked", "empty"],
+    "link": "https://maps.app.goo.gl/bW8Z3F3uizutnSZUA",
+    "latitude": 29.645041380071092,
+    "longitude": -82.34165135108046
   },
   {
     "id": 4,
@@ -45,7 +54,10 @@
     "capacity": "large",
     "hours": "7am-11pm",
     "upvotes": 8,
-    "tags": ["conversational", "food-nearby", "packed"]
+    "tags": ["conversational", "food-nearby", "packed"],
+    "link": "https://maps.app.goo.gl/Ag4avab5E6gLH8Wy7",
+    "latitude": 29.646024857472547,
+    "longitude": -82.3476089406644
   }, 
     {
     "id": 6,
@@ -57,7 +69,10 @@
     "capacity": "large",
     "hours": "24/7",
     "upvotes": 0,
-    "tags": ["social", "starbucks-nearby", "moderate-busyness"]
+    "tags": ["social", "starbucks-nearby", "moderate-busyness"],
+    "link": "https://maps.app.goo.gl/DUcW8b5kZCixtX7b8",
+    "latitude": 29.651378679250708,
+    "longitude": -82.34287880427001
   },
   {
     "id": 7,
@@ -69,7 +84,10 @@
     "capacity": "solo",
     "hours": "24/7",
     "upvotes": 0,
-    "tags": ["silent", "cubicles", "empty"]
+    "tags": ["silent", "cubicles", "empty"],
+    "link": "https://maps.app.goo.gl/DUcW8b5kZCixtX7b8",
+    "latitude": 29.651378679250900,
+    "longitude": -82.34287880427201
   },
   {
     "id": 8,
@@ -81,7 +99,10 @@
     "capacity": "small",
     "hours": "24/5",
     "upvotes": 0,
-    "tags": ["whiteboards", "group-friendly", "packed"]
+    "tags": ["whiteboards", "group-friendly", "packed"],
+    "link": "https://maps.app.goo.gl/qFqVq4PXj7x6VAXj7",
+    "latitude": 29.648167447747002,
+    "longitude": -82.34368138712809
   },
   {
     "id": 9,
@@ -93,7 +114,10 @@
     "capacity": "solo",
     "hours": "24/5",
     "upvotes": 0,
-    "tags": ["silent", "outlets", "moderate-busyness"]
+    "tags": ["silent", "outlets", "moderate-busyness"],
+    "link": "https://maps.app.goo.gl/qFqVq4PXj7x6VAXj7",
+    "latitude": 29.648167447747708,
+    "longitude": -82.34368138712009
   },
   {
     "id": 10,
@@ -105,7 +129,10 @@
     "capacity": "large",
     "hours": "24/7",
     "upvotes": 0,
-    "tags": ["conversational", "chick-fil-a-nearby", "packed"]
+    "tags": ["conversational", "chick-fil-a-nearby", "packed"],
+    "link": "https://maps.app.goo.gl/8uoyYse2DkFvi5h49",
+    "latitude": 29.64917415781981,
+    "longitude": -82.34487094201218
   },
   {
     "id": 11,
@@ -117,7 +144,10 @@
     "capacity": "solo",
     "hours": "24/7",
     "upvotes": 0,
-    "tags": ["quiet", "comfy-chairs", "empty"]
+    "tags": ["quiet", "comfy-chairs", "empty"],
+    "link": "https://maps.app.goo.gl/8uoyYse2DkFvi5h49",
+    "latitude": 29.64917415781819,
+    "longitude": -82.34487094201812
   },
     {
     "id": 12,
@@ -129,7 +159,10 @@
     "capacity": "small",
     "hours": "7am-11pm",
     "upvotes": 0,
-    "tags": ["indoors", "near-food", "moderate-busyness"]
+    "tags": ["indoors", "near-food", "moderate-busyness"],
+    "link": "https://maps.app.goo.gl/MKh5fVGdyWa23eNq5",
+    "latitude": 29.64646104075068,
+    "longitude": -82.34784597692867
   },
   {
     "id": 13,
@@ -141,7 +174,10 @@
     "capacity": "small",
     "hours": "24/7",
     "upvotes": 0,
-    "tags": ["modern", "honors-students", "empty"]
+    "tags": ["modern", "honors-students", "empty"],
+    "link": "https://maps.app.goo.gl/VPfTRhzMPuycRYpU6",
+    "latitude": 29.645413,
+    "longitude": -82.342301
   },
   {
     "id": 14,
@@ -153,7 +189,10 @@
     "capacity": "large",
     "hours": "24/7",
     "upvotes": 0,
-    "tags": ["whiteboards", "fresh-facilities", "moderate-busyness"]
+    "tags": ["whiteboards", "fresh-facilities", "moderate-busyness"],
+    "link": "https://maps.app.goo.gl/VPfTRhzMPuycRYpU6",
+    "latitude": 29.645814,
+    "longitude": -82.342123
   },
   {
     "id": 15,
@@ -165,7 +204,10 @@
     "capacity": "large",
     "hours": "8am-9pm",
     "upvotes": 0,
-    "tags": ["empty"]
+    "tags": ["empty"],
+    "link": "https://maps.app.goo.gl/gW2XsWQFLmdWvK8F6",
+    "latitude": 29.646672612929585,
+    "longitude": -82.33769529170178
   },
   {
     "id": 16,
@@ -177,7 +219,10 @@
     "capacity": "solo",
     "hours": "24/5",
     "upvotes": 0,
-    "tags": ["absolute-silence", "cubicles", "packed"]
+    "tags": ["absolute-silence", "cubicles", "packed"],
+    "link": "https://maps.app.goo.gl/qFqVq4PXj7x6VAXj7",
+    "latitude": 29.648167447747606,
+    "longitude": -82.34368138712490
   },
   {
     "id": 17,
@@ -189,7 +234,10 @@
     "capacity": "large",
     "hours": "8am-11pm",
     "upvotes": 0,
-    "tags": ["outlets"]
+    "tags": ["outlets"],
+    "link":"https://maps.app.goo.gl/9UgKMeHRoAXmXUBQ9",
+    "latitude": 29.641122372557806,
+    "longitude": -82.34492901925748
   },
     {
     "id": 18,
@@ -201,7 +249,10 @@
     "capacity": "small",
     "hours": "7am-11pm",
     "upvotes": 0,
-    "tags": ["indoors", "empty"]
+    "tags": ["indoors", "empty"],
+    "link": "https://maps.app.goo.gl/WqQb7oRcGvj8oY8XA",
+    "latitude": 29.64637645871828,
+    "longitude": -82.3476630111904
   },
   {
     "id": 19,
@@ -213,7 +264,10 @@
     "capacity": "large",
     "hours": "7am-10pm",
     "upvotes": 0,
-    "tags": ["modern", "collaborative", "packed"]
+    "tags": ["modern", "collaborative", "packed"],
+    "link": "https://maps.app.goo.gl/WUeuBCVYfcsK7fQw9",
+    "latitude": 29.64405521047269,
+    "longitude": -82.34727397147655
   },
   {
     "id": 20,
@@ -225,7 +279,10 @@
     "capacity": "small",
     "hours": "7am-10pm",
     "upvotes": 0,
-    "tags": ["clean", "high-tech", "moderate-busyness"]
+    "tags": ["clean", "high-tech", "moderate-busyness"],
+    "link": "https://maps.app.goo.gl/WUeuBCVYfcsK7fQw9",
+    "latitude": 29.644025,
+    "longitude": -82.347523
   },
   {
     "id": 21,
@@ -237,7 +294,10 @@
     "capacity": "solo",
     "hours": "24/7",
     "upvotes": 0,
-    "tags": ["plaza-view", "natural-light", "packed"]
+    "tags": ["plaza-view", "natural-light", "packed"],
+    "link": "https://maps.app.goo.gl/DUcW8b5kZCixtX7b8",
+    "latitude": 29.6511440760503,
+    "longitude": -82.34261128702764
   },
   {
     "id": 22,
@@ -249,7 +309,10 @@
     "capacity": "small",
     "hours": "12pm-11pm",
     "upvotes": 0,
-    "tags": ["plaza-view", "natural-light", "packed"]
+    "tags": ["plaza-view", "natural-light", "packed"],
+    "link": "https://maps.app.goo.gl/nf3Hj5Ga8m7AdFnX8",
+    "latitude": 29.64638015075832,
+    "longitude": -82.34795070576412
   }
 ]
 
