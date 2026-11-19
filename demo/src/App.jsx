@@ -53,7 +53,7 @@ function Filters({ filters, setFilters, onClear }) {
   return (
     <div className="filters-panel">
       <div>
-        <h2>Quiet level</h2>
+        <h2><span aria-hidden="true">🔇</span> Quiet level</h2>
         <div className="filter-options">
           {['silent', 'quiet', 'moderate', 'loud'].map((level) => (
             <label key={level}><input type="checkbox" checked={filters.quiet.includes(level)} onChange={(event) => update('quiet', level, event.target.checked)} /> {level}</label>
@@ -61,7 +61,7 @@ function Filters({ filters, setFilters, onClear }) {
         </div>
       </div>
       <div>
-        <h2>Outlets</h2>
+        <h2><span aria-hidden="true">🔌</span> Outlets</h2>
         <div className="filter-options">
           {['true', 'false'].map((value) => (
             <label key={value}><input type="radio" name="outlets" checked={filters.outlets === value} onChange={() => setFilters({ ...filters, outlets: value })} /> {value === 'true' ? 'Yes' : 'No'}</label>
@@ -70,7 +70,7 @@ function Filters({ filters, setFilters, onClear }) {
         </div>
       </div>
       <div>
-        <h2>Capacity</h2>
+        <h2><span aria-hidden="true">👥</span> Capacity</h2>
         <div className="filter-options">
           {['solo', 'small', 'large'].map((capacity) => (
             <label key={capacity}><input type="checkbox" checked={filters.capacity.includes(capacity)} onChange={(event) => update('capacity', capacity, event.target.checked)} /> {capacity}</label>
@@ -86,6 +86,8 @@ function MapView({ spots, darkMode }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const markers = useRef([]);
+  const activePopup = useRef(null);
+  const clickedPopup = useRef(null);
 
   useEffect(() => {
     if (!HAS_VALID_MAPBOX_TOKEN) return undefined;
@@ -118,6 +120,8 @@ function MapView({ spots, darkMode }) {
     return () => {
       markers.current.forEach((marker) => marker.remove());
       markers.current = [];
+      activePopup.current = null;
+      clickedPopup.current = null;
       map.current?.remove();
       map.current = null;
     };
@@ -132,27 +136,95 @@ function MapView({ spots, darkMode }) {
     if (!map.current || !HAS_VALID_MAPBOX_TOKEN) return;
 
     markers.current.forEach((marker) => marker.remove());
+    const spotCoordinates = spots.map((spot) => getSpotCoordinates(spot));
     markers.current = spots.map((spot) => {
       const popupContent = document.createElement('div');
       popupContent.className = 'map-popup';
-      popupContent.innerHTML = `
-        <strong></strong>
-        <span></span>
-        <small></small>
-        <small></small>
-      `;
-      popupContent.querySelector('strong').textContent = spot.name;
-      popupContent.querySelector('span').textContent = spot.building;
-      popupContent.querySelector('small').textContent = `${spot.quiet_level} · ${spot.capacity}`;
-      popupContent.querySelectorAll('small')[1].textContent = spot.has_outlets
-        ? 'Outlets available'
-        : 'No outlets';
+      let popupImage = null;
+      if (spot.image) {
+        const image = document.createElement('img');
+        image.className = 'map-popup-image';
+        image.alt = `${spot.name} preview`;
+        popupContent.appendChild(image);
+        popupImage = image;
+      }
+      const name = document.createElement('h3');
+      name.className = 'map-popup-name';
+      name.textContent = spot.name;
+      popupContent.appendChild(name);
+      const building = document.createElement('span');
+      building.className = 'map-popup-building';
+      building.textContent = spot.building;
+      popupContent.appendChild(building);
+      const details = document.createElement('small');
+      details.textContent = `${spot.quiet_level} · ${spot.capacity}`;
+      popupContent.appendChild(details);
+      const outlets = document.createElement('small');
+      outlets.textContent = spot.has_outlets ? 'Outlets available' : 'No outlets';
+      popupContent.appendChild(outlets);
 
-      return new mapboxgl.Marker({ color: '#d47b45' })
+      const popupMaxWidth = window.innerWidth <= 760
+        ? `${Math.min(240, window.innerWidth - 32)}px`
+        : '320px';
+      const popup = new mapboxgl.Popup({
+        maxWidth: popupMaxWidth,
+        offset: 18,
+      }).setDOMContent(popupContent);
+      if (popupImage) {
+        popupImage.addEventListener('load', () => {
+          if (activePopup.current === popup) popup.addTo(map.current);
+        });
+        popupImage.src = spot.image;
+      }
+      const marker = new mapboxgl.Marker({ color: '#d47b45' })
         .setLngLat(getSpotCoordinates(spot))
-        .setPopup(new mapboxgl.Popup({ offset: 18 }).setDOMContent(popupContent))
+        .setPopup(popup)
         .addTo(map.current);
+      const markerElement = marker.getElement();
+      markerElement.setAttribute('role', 'button');
+      markerElement.setAttribute('tabindex', '0');
+      markerElement.setAttribute('aria-label', `Preview ${spot.name}`);
+      markerElement.style.cursor = 'pointer';
+
+      popup.on('close', () => {
+        if (activePopup.current === popup) activePopup.current = null;
+        if (clickedPopup.current === popup) clickedPopup.current = null;
+      });
+
+      markerElement.addEventListener('mouseenter', () => {
+        if (clickedPopup.current && clickedPopup.current !== popup) return;
+        activePopup.current?.remove();
+        activePopup.current = popup;
+        popup.addTo(map.current);
+      });
+      markerElement.addEventListener('mouseleave', () => {
+        if (clickedPopup.current !== popup) popup.remove();
+      });
+      markerElement.addEventListener('click', () => {
+        if (popup.isOpen()) {
+          clickedPopup.current?.remove();
+          clickedPopup.current = popup;
+        } else if (clickedPopup.current === popup) {
+          clickedPopup.current = null;
+        }
+      });
+      return marker;
     });
+
+    if (spotCoordinates.length) {
+      const bounds = spotCoordinates.slice(1).reduce(
+        (currentBounds, coordinate) => currentBounds.extend(coordinate),
+        new mapboxgl.LngLatBounds(spotCoordinates[0], spotCoordinates[0]),
+      );
+      const isMobile = window.innerWidth <= 760;
+      map.current.fitBounds(bounds, {
+        padding: isMobile
+          ? { top: 170, right: 48, bottom: 52, left: 48 }
+          : { top: 150, right: 110, bottom: 90, left: 110 },
+        maxZoom: 15.5,
+        duration: 500,
+      });
+    }
   }, [spots]);
 
   return (
@@ -327,57 +399,60 @@ function App() {
       </header>
 
       {showAddSpot && (
-        <form className="add-spot-form" id="add-spot-form" onSubmit={addSpot}>
-          <div className="add-spot-heading">
-            <div>
-              <p className="eyebrow">Share with students</p>
-              <h2>Add a study spot</h2>
+        <>
+          <button className="modal-backdrop" type="button" aria-label="Close add study spot form" onClick={() => setShowAddSpot(false)} />
+          <form className="add-spot-form" id="add-spot-form" onSubmit={addSpot}>
+            <div className="add-spot-heading">
+              <div>
+                <p className="eyebrow">Share with students</p>
+                <h2>Add a study spot</h2>
+              </div>
+              <p className="form-note">The server assigns the spot ID and starts upvotes at 0.</p>
             </div>
-            <p className="form-note">The server assigns the spot ID and starts upvotes at 0.</p>
-          </div>
-          <div className="form-grid">
-            <label>
-              Spot name
-              <input required maxLength="120" value={newSpot.name} onChange={(event) => setNewSpot({ ...newSpot, name: event.target.value })} />
-            </label>
-            <label>
-              Building
-              <input required maxLength="120" value={newSpot.building} onChange={(event) => setNewSpot({ ...newSpot, building: event.target.value })} />
-            </label>
-            <label className="form-wide">
-              Description
-              <textarea required maxLength="500" rows="3" value={newSpot.description} onChange={(event) => setNewSpot({ ...newSpot, description: event.target.value })} />
-            </label>
-            <label>
-              Quiet level
-              <select value={newSpot.quiet_level} onChange={(event) => setNewSpot({ ...newSpot, quiet_level: event.target.value })}>
-                {['silent', 'quiet', 'moderate', 'loud'].map((level) => <option key={level} value={level}>{level}</option>)}
-              </select>
-            </label>
-            <label>
-              Capacity
-              <select value={newSpot.capacity} onChange={(event) => setNewSpot({ ...newSpot, capacity: event.target.value })}>
-                {['solo', 'small', 'large'].map((capacity) => <option key={capacity} value={capacity}>{capacity}</option>)}
-              </select>
-            </label>
-            <label>
-              Hours
-              <input required maxLength="120" placeholder="e.g. 8am-10pm or 24/7" value={newSpot.hours} onChange={(event) => setNewSpot({ ...newSpot, hours: event.target.value })} />
-            </label>
-            <label>
-              Tags <span className="field-hint">(comma-separated, optional)</span>
-              <input placeholder="e.g. quiet, group-friendly" value={newSpot.tags} onChange={(event) => setNewSpot({ ...newSpot, tags: event.target.value })} />
-            </label>
-            <label className="outlets-control">
-              <input type="checkbox" checked={newSpot.has_outlets} onChange={(event) => setNewSpot({ ...newSpot, has_outlets: event.target.checked })} />
-              Has outlets
-            </label>
-          </div>
-          <div className="form-footer">
-            <p className="form-note">Quiet level: silent, quiet, moderate, or loud. Capacity: solo, small, or large.</p>
-            <button className="primary-button" type="submit" disabled={isSubmitting}>{isSubmitting ? 'Adding...' : 'Add spot'}</button>
-          </div>
-        </form>
+            <div className="form-grid">
+              <label>
+                Spot name
+                <input required maxLength="120" value={newSpot.name} onChange={(event) => setNewSpot({ ...newSpot, name: event.target.value })} />
+              </label>
+              <label>
+                Building
+                <input required maxLength="120" value={newSpot.building} onChange={(event) => setNewSpot({ ...newSpot, building: event.target.value })} />
+              </label>
+              <label className="form-wide">
+                Description
+                <textarea required maxLength="500" rows="3" value={newSpot.description} onChange={(event) => setNewSpot({ ...newSpot, description: event.target.value })} />
+              </label>
+              <label>
+                Quiet level
+                <select value={newSpot.quiet_level} onChange={(event) => setNewSpot({ ...newSpot, quiet_level: event.target.value })}>
+                  {['silent', 'quiet', 'moderate', 'loud'].map((level) => <option key={level} value={level}>{level}</option>)}
+                </select>
+              </label>
+              <label>
+                Capacity
+                <select value={newSpot.capacity} onChange={(event) => setNewSpot({ ...newSpot, capacity: event.target.value })}>
+                  {['solo', 'small', 'large'].map((capacity) => <option key={capacity} value={capacity}>{capacity}</option>)}
+                </select>
+              </label>
+              <label>
+                Hours
+                <input required maxLength="120" placeholder="e.g. 8am-10pm or 24/7" value={newSpot.hours} onChange={(event) => setNewSpot({ ...newSpot, hours: event.target.value })} />
+              </label>
+              <label>
+                Tags <span className="field-hint">(comma-separated, optional)</span>
+                <input placeholder="e.g. quiet, group-friendly" value={newSpot.tags} onChange={(event) => setNewSpot({ ...newSpot, tags: event.target.value })} />
+              </label>
+              <label className="outlets-control">
+                <input type="checkbox" checked={newSpot.has_outlets} onChange={(event) => setNewSpot({ ...newSpot, has_outlets: event.target.checked })} />
+                Has outlets
+              </label>
+            </div>
+            <div className="form-footer">
+              <p className="form-note">Quiet level: silent, quiet, moderate, or loud. Capacity: solo, small, or large.</p>
+              <button className="primary-button" type="submit" disabled={isSubmitting}>{isSubmitting ? 'Adding...' : 'Add spot'}</button>
+            </div>
+          </form>
+        </>
       )}
       {submissionMessage && <p className={`submission-message ${submissionMessage.startsWith('Unable') ? 'error' : ''}`} role="status">{submissionMessage}</p>}
 
@@ -409,7 +484,11 @@ function App() {
               placeholder={tab === 'map' ? 'Search the map...' : 'Search study spots or buildings...'}
               aria-label={tab === 'map' ? 'Search the map' : 'Search study spots'}
             />
-            <button className="expand-button" type="button" onClick={() => setShowFilters(!showFilters)} aria-expanded={showFilters}>{showFilters ? '⌃' : '⌄'}</button>
+            <button className="expand-button" type="button" onClick={() => setShowFilters(!showFilters)} aria-expanded={showFilters} aria-label={showFilters ? 'Hide filters' : 'Show filters'}>
+              <span className="filter-button-icon" aria-hidden="true">☷</span>
+              <span className="filter-button-label">Filters</span>
+              <span aria-hidden="true">{showFilters ? '⌃' : '⌄'}</span>
+            </button>
           </div>
           {showFilters && <Filters filters={filters} setFilters={setFilters} onClear={clearFilters} />}
         </div>

@@ -66,7 +66,7 @@
     "has_outlets": false,
     "capacity": "large",
     "hours": "7am-11pm",
-    "upvotes": 9,
+    "upvotes": 10,
     "tags": [
       "conversational",
       "food-nearby",
@@ -226,7 +226,7 @@
     "has_outlets": true,
     "capacity": "small",
     "hours": "24/7",
-    "upvotes": 10,
+    "upvotes": 11,
     "tags": [
       "modern",
       "honors-students",
