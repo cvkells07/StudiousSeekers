@@ -18,6 +18,13 @@ const BUILDING_COORDINATES = {
 };
 
 function getSpotCoordinates(spot) {
+  const longitude = Number(spot.longitude);
+  const latitude = Number(spot.latitude);
+
+  if (Number.isFinite(longitude) && Number.isFinite(latitude)) {
+    return [longitude, latitude];
+  }
+
   const building = Object.keys(BUILDING_COORDINATES)
     .find((name) => spot.building.startsWith(name));
 
@@ -212,7 +219,7 @@ function App() {
       </header>
 
       <nav className="tabs" aria-label="Study spot views">
-        <button className={tab === 'map' ? 'selected' : ''} type="button" onClick={() => setTab('map')}>⌖ <span>Map view</span></button>
+        <button className={tab === 'map' ? 'selected' : ''} type="button" onClick={() => setTab('map')}>🌐 <span>Map view</span></button>
         <button className={tab === 'list' ? 'selected' : ''} type="button" onClick={() => setTab('list')}>☷ <span>List view</span></button>
         <button
           className="theme-toggle"
